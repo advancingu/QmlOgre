@@ -1,0 +1,8 @@
+*.user
+.obj/
+.moc/
+.ui/
+Makefile
+*~
+*.app
+.directory
