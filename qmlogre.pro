@@ -6,6 +6,10 @@ TARGET = qmlogre
 unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += OGRE
+    OGRELIBDIR = $$system(pkg-config --libs-only-L OGRE)
+    OGRELIBDIR = $$replace(OGRELIBDIR, -L,)
+    OGREPLUGINDIR = $$OGRELIBDIR/OGRE
+    DEFINES += OGRE_PLUGIN_VAR=\"$$OGREPLUGINDIR\"
 } else {
     OGREDIR = $$(OGRE_HOME)
     isEmpty(OGREDIR) {
@@ -26,6 +30,8 @@ unix {
         INCLUDEPATH += $$BOOSTDIR
         LIBS += -L$$BOOSTDIR/lib -lboost_date_time-xgcc40-mt-1_42 -lboost_thread-xgcc40-mt-1_42
     }
+
+    DEFINES += OGRE_PLUGIN_VAR=$$OGREDIR/lib
 }
 
 UI_DIR = ./.ui
@@ -33,4 +39,8 @@ OBJECTS_DIR = ./.obj
 MOC_DIR = ./.moc
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    ogrewidget.cpp
+
+HEADERS += \
+    ogrewidget.h
