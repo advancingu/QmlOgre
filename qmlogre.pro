@@ -1,5 +1,5 @@
 CONFIG += qt
-QT += opengl
+QT += opengl declarative
 TEMPLATE = app
 TARGET = qmlogre
 
@@ -40,7 +40,9 @@ MOC_DIR = ./.moc
 
 
 SOURCES += main.cpp \
-    ogrewidget.cpp
+    ogrewidget.cpp \
+    declarativeviewtexture.cpp
 
 HEADERS += \
-    ogrewidget.h
+    ogrewidget.h \
+    declarativeviewtexture.h

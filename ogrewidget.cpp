@@ -1,5 +1,7 @@
 #include "ogrewidget.h"
 
+#include "declarativeviewtexture.h"
+
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 #include <OgreColourValue.h>
@@ -7,7 +9,7 @@
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 #include <OgreResourceGroupManager.h>
-#include <QtGui/QResizeEvent>
+#include <OgreMaterialManager.h>
 #include <QtCore/QDebug>
 
 #if defined(Q_WS_X11)
@@ -15,18 +17,18 @@
 #endif
 
 OgreWidget::OgreWidget(QWidget *parent) :
-    QWidget(parent),
+    QGLWidget(parent),
     m_root(0),
     m_camera(0),
     m_sceneManager(0),
     m_renderWindow(0),
-    m_viewport(0)
+    m_viewport(0),
+    m_QmlUI(0)
 {
-    setAttribute(Qt::WA_PaintOnScreen);
-    setAttribute(Qt::WA_NoSystemBackground);
+    setAutoBufferSwap(false);
+    setFormat(QGLFormat(QGL::DoubleBuffer | QGL::SampleBuffers));
+    setAttribute(Qt::WA_OpaquePaintEvent);
     resize(1024, 768);
-
-    initOgre();
 
     startTimer(16);
 }
@@ -48,6 +50,90 @@ OgreWidget::~OgreWidget()
     delete m_root;
 }
 
+void OgreWidget::paintGL()
+{
+    // Render Ogre
+    Ogre::WindowEventUtilities::messagePump();
+    m_root->renderOneFrame();
+
+    // Set a clear pass to give the renderer a clear renderstate
+    static Ogre::Pass* clearPass = 0;
+    if (!clearPass)
+    {
+        Ogre::MaterialPtr clearMat = Ogre::MaterialManager::getSingleton().getByName("BaseWhite");
+        clearPass = clearMat->getTechnique(0)->getPass(0);
+    }
+    m_sceneManager->_setPass(clearPass, true, false);
+
+    // Render the QDeclarativeView texture on top
+    glBindTexture(GL_TEXTURE_2D, m_QmlUI->textureId());
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    /*float top = qMax(-1.f, qMin(1.f, (rect().center().y() - m_QmlUI->pos().y()) / float(rect().center().y())));
+    float left = qMax(-1.f, qMin(1.f, (rect().center().x() - m_QmlUI->pos().x()) / float(-rect().center().x())));
+    float bottom = qMax(-1.f, qMin(1.f, (rect().center().y() - m_QmlUI->pos().y() - m_QmlUI->height()) / float(rect().center().y())));
+    float right = qMax(-1.f, qMin(1.f, (rect().center().x() - m_QmlUI->pos().x() - m_QmlUI->width()) / float(-rect().center().x())));
+    float texTop = qMin(1.f, qMax(-m_QmlUI->pos().y() / float(m_QmlUI->height()), 0.f));
+    float texLeft = qMin(1.f, qMax(-m_QmlUI->pos().x() / float(m_QmlUI->width()), 0.f));
+    float texBottom = qMax(0.f, qMin(height() - m_QmlUI->pos().y() / float(m_QmlUI->height()), 1.f));
+    float texRight = qMax(0.f, qMin(width() - m_QmlUI->pos().x() / float(m_QmlUI->width()), 1.f));*/
+
+    float top = (rect().center().y() - m_QmlUI->pos().y()) / float(rect().center().y());
+    float left = (rect().center().x() - m_QmlUI->pos().x()) / float(-rect().center().x());
+    float bottom = (rect().center().y() - m_QmlUI->pos().y() - m_QmlUI->height()) / float(rect().center().y());
+    float right = (rect().center().x() - m_QmlUI->pos().x() - m_QmlUI->width()) / float(-rect().center().x());
+
+    glBegin(GL_QUADS);
+    /*glTexCoord2f(texLeft, texTop); glVertex3f(left, top, -1.0f); // Top Left
+    glTexCoord2f(texLeft, texBottom); glVertex3f(left, bottom, -1.0f); // Bottom Left
+    glTexCoord2f(texRight, texBottom); glVertex3f(right, bottom, -1.0f); // Bottom Right
+    glTexCoord2f(texRight, texTop); glVertex3f(right, top, -1.0f); // Top Right*/
+    glTexCoord2f(0, 0); glVertex3f(left, top, -1.0f); // Top Left
+    glTexCoord2f(0, 1); glVertex3f(left, bottom, -1.0f); // Bottom Left
+    glTexCoord2f(1, 1); glVertex3f(right, bottom, -1.0f); // Bottom Right
+    glTexCoord2f(1, 0); glVertex3f(right, top, -1.0f); // Top Right
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void OgreWidget::timerEvent(QTimerEvent *e)
+{
+    Q_UNUSED(e)
+    paintGL();
+    swapBuffers();
+}
+
+void OgreWidget::initializeGL()
+{
+    initOgre();
+
+    m_QmlUI = new DeclarativeViewTexture(this);
+}
+
+void OgreWidget::resizeGL(int w, int h)
+{
+    if (m_renderWindow) {
+        m_renderWindow->resize(w, h);
+        m_renderWindow->windowMovedOrResized();
+    }
+    if (m_camera) {
+        Ogre::Real aspectRatio = Ogre::Real(w) / Ogre::Real(h);
+        m_camera->setAspectRatio(aspectRatio);
+    }
+}
+
+
 void OgreWidget::initOgre()
 {
     m_root = new Ogre::Root;
@@ -59,9 +145,6 @@ void OgreWidget::initOgre()
 
     Ogre::NameValuePairList params;
     Ogre::String externalWindowHandleParams;
-
-    //Accept input focus
-    //setFocusPolicy(Qt::StrongFocus);
 
 #if defined(Q_WS_WIN)
     //positive integer for W32 (HWND handle) - According to Ogre Docs
@@ -85,6 +168,9 @@ void OgreWidget::initOgre()
 #if defined(Q_WS_X11)
     params["parentWindowHandle"] = externalWindowHandleParams;
 #endif
+
+    params["externalGLControl"] = "true";
+    params["currentGLContext"] = "true";
 
     //Finally create our window.
     m_renderWindow = m_root->createRenderWindow("OgreWindow", width(), height(), false, &params);
@@ -118,31 +204,4 @@ void OgreWidget::initOgre()
     m_sceneManager->getRootSceneNode()->attachObject(m_sceneManager->createEntity("Head", "ogrehead.mesh"));
     m_camera->move(Ogre::Vector3(0, 0, 300));
     m_camera->lookAt(0, 0, 0);
-}
-
-void OgreWidget::render()
-{
-    Ogre::WindowEventUtilities::messagePump();
-    m_root->renderOneFrame();
-}
-
-void OgreWidget::timerEvent(QTimerEvent *e)
-{
-    Q_UNUSED(e)
-    render();
-}
-
-void OgreWidget::resizeEvent(QResizeEvent *e)
-{
-    const QSize &newSize = e->size();
-    if (m_renderWindow) {
-        m_renderWindow->resize(newSize.width(), newSize.height());
-        m_renderWindow->windowMovedOrResized();
-    }
-    if (m_camera) {
-        Ogre::Real aspectRatio = Ogre::Real(newSize.width()) / Ogre::Real(newSize.height());
-        m_camera->setAspectRatio(aspectRatio);
-    }
-
-    QWidget::resizeEvent(e);
 }

@@ -1,7 +1,7 @@
 #ifndef OGREWIDGET_H
 #define OGREWIDGET_H
 
-#include <QWidget>
+#include <QGLWidget>
 
 #define STRINGIFY_(x) #x
 #define STRINGIFY(x) STRINGIFY_(x)
@@ -15,8 +15,9 @@ class RenderWindow;
 class Viewport;
 class RenderTarget;
 }
+class DeclarativeViewTexture;
 
-class OgreWidget : public QWidget
+class OgreWidget : public QGLWidget
 {
     Q_OBJECT
 public:
@@ -36,9 +37,11 @@ public:
 
 protected:
     void initOgre();
-    void render();
     void timerEvent(QTimerEvent *);
-    void resizeEvent(QResizeEvent *);
+
+    void initializeGL();
+    void resizeGL(int w, int h);
+    void paintGL();
 
 private:
     Ogre::Root *m_root;
@@ -46,6 +49,8 @@ private:
     Ogre::SceneManager *m_sceneManager;
     Ogre::RenderWindow *m_renderWindow;
     Ogre::Viewport *m_viewport;
+
+    DeclarativeViewTexture *m_QmlUI;
 };
 
 #endif // OGREWIDGET_H
