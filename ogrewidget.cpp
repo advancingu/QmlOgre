@@ -79,25 +79,12 @@ void OgreWidget::paintGL()
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    /*float top = qMax(-1.f, qMin(1.f, (rect().center().y() - m_QmlUI->pos().y()) / float(rect().center().y())));
-    float left = qMax(-1.f, qMin(1.f, (rect().center().x() - m_QmlUI->pos().x()) / float(-rect().center().x())));
-    float bottom = qMax(-1.f, qMin(1.f, (rect().center().y() - m_QmlUI->pos().y() - m_QmlUI->height()) / float(rect().center().y())));
-    float right = qMax(-1.f, qMin(1.f, (rect().center().x() - m_QmlUI->pos().x() - m_QmlUI->width()) / float(-rect().center().x())));
-    float texTop = qMin(1.f, qMax(-m_QmlUI->pos().y() / float(m_QmlUI->height()), 0.f));
-    float texLeft = qMin(1.f, qMax(-m_QmlUI->pos().x() / float(m_QmlUI->width()), 0.f));
-    float texBottom = qMax(0.f, qMin(height() - m_QmlUI->pos().y() / float(m_QmlUI->height()), 1.f));
-    float texRight = qMax(0.f, qMin(width() - m_QmlUI->pos().x() / float(m_QmlUI->width()), 1.f));*/
-
     float top = (rect().center().y() - m_QmlUI->pos().y()) / float(rect().center().y());
     float left = (rect().center().x() - m_QmlUI->pos().x()) / float(-rect().center().x());
     float bottom = (rect().center().y() - m_QmlUI->pos().y() - m_QmlUI->height()) / float(rect().center().y());
     float right = (rect().center().x() - m_QmlUI->pos().x() - m_QmlUI->width()) / float(-rect().center().x());
 
     glBegin(GL_QUADS);
-    /*glTexCoord2f(texLeft, texTop); glVertex3f(left, top, -1.0f); // Top Left
-    glTexCoord2f(texLeft, texBottom); glVertex3f(left, bottom, -1.0f); // Bottom Left
-    glTexCoord2f(texRight, texBottom); glVertex3f(right, bottom, -1.0f); // Bottom Right
-    glTexCoord2f(texRight, texTop); glVertex3f(right, top, -1.0f); // Top Right*/
     glTexCoord2f(0, 0); glVertex3f(left, top, -1.0f); // Top Left
     glTexCoord2f(0, 1); glVertex3f(left, bottom, -1.0f); // Bottom Left
     glTexCoord2f(1, 1); glVertex3f(right, bottom, -1.0f); // Bottom Right
@@ -119,6 +106,8 @@ void OgreWidget::initializeGL()
     initOgre();
 
     m_QmlUI = new DeclarativeViewTexture(this);
+    m_QmlUI->setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    m_QmlUI->setSource(QUrl("example.qml"));
 }
 
 void OgreWidget::resizeGL(int w, int h)
@@ -130,6 +119,9 @@ void OgreWidget::resizeGL(int w, int h)
     if (m_camera) {
         Ogre::Real aspectRatio = Ogre::Real(w) / Ogre::Real(h);
         m_camera->setAspectRatio(aspectRatio);
+    }
+    if (m_QmlUI) {
+        m_QmlUI->resize(w, h);
     }
 }
 

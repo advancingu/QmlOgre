@@ -44,19 +44,15 @@ DeclarativeViewTexture::~DeclarativeViewTexture()
 void DeclarativeViewTexture::paintEvent(QPaintEvent *event)
 {
     // Render the view in an offscreen image
-    if (m_bufferPainter)
-        delete m_bufferPainter;
+    delete m_bufferPainter;
     m_bufferPainter = new QPainter;
-
     QRegion exposedRegion = event->region();
     QImage im(exposedRegion.boundingRect().size(), QImage::Format_ARGB32_Premultiplied);
     im.fill(Qt::transparent);
     m_bufferPainter->begin(&im);
     m_bufferPainter->translate(-exposedRegion.boundingRect().topLeft());
     m_bufferPainter->setClipRegion(exposedRegion);
-
     QDeclarativeView::paintEvent(event);
-
     m_bufferPainter->end();
 
     // Upload the image in graphics memory

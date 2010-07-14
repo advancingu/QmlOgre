@@ -46,3 +46,6 @@ SOURCES += main.cpp \
 HEADERS += \
     ogrewidget.h \
     declarativeviewtexture.h
+
+OTHER_FILES += \
+    example.qml
