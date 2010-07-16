@@ -24,7 +24,7 @@ Item {
     Rectangle {
         id: rectangle1
         width: 139
-        height: 204
+        height: 208
         radius: 15
         gradient: Gradient {
             GradientStop {
@@ -33,7 +33,7 @@ Item {
             }
 
             GradientStop {
-                position: 0.27
+                position: 0.24
                 color: "#141414"
             }
 
@@ -176,7 +176,7 @@ Item {
             y: 0
             width: 24
             height: 24
-            anchors.verticalCenterOffset: 2
+            anchors.verticalCenterOffset: 9
             anchors.centerIn: parent
             smooth: true
             source: "circle.png"
