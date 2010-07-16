@@ -18,13 +18,6 @@ CameraNodeObject::CameraNodeObject(Ogre::Camera *cam, QObject *parent) :
     cam->move(initialPosition);
 }
 
-void CameraNodeObject::resetPosition()
-{
-    m_yaw = 0;
-    m_pitch = 0;
-    updateRotation();
-}
-
 void CameraNodeObject::updateRotation()
 {
     m_node->resetOrientation();

@@ -6,6 +6,21 @@ Item {
     height: 768
     clip: true
 
+    Item {
+        id: camerawrapper
+        property real yaw: 0
+        property real pitch: 0
+        property real zoom: 1
+
+        onYawChanged: Camera.yaw = yaw
+        onPitchChanged: Camera.pitch = pitch
+        onZoomChanged: Camera.zoom = zoom
+
+        Behavior on yaw { NumberAnimation{ } }
+        Behavior on pitch { NumberAnimation{ } }
+        Behavior on zoom { NumberAnimation{ } }
+    }
+
     Rectangle {
         id: rectangle1
         width: 139
@@ -69,7 +84,7 @@ Item {
                 id: mouse_area1
                 anchors.fill: parent
 
-                onPressed: Camera.yaw += 10
+                onPressed: camerawrapper.yaw += 20
             }
         }
 
@@ -84,7 +99,7 @@ Item {
                 id: mouse_area2
                 anchors.fill: parent
 
-                onPressed: Camera.yaw -= 10
+                onPressed: camerawrapper.yaw -= 20
             }
         }
 
@@ -99,7 +114,7 @@ Item {
                 id: mouse_area3
                 anchors.fill: parent
 
-                onPressed: Camera.pitch -= 10
+                onPressed: camerawrapper.pitch -= 20
             }
         }
 
@@ -120,7 +135,7 @@ Item {
                 anchors.topMargin: 0
                 anchors.fill: parent
 
-                onPressed: Camera.pitch += 10
+                onPressed: camerawrapper.pitch += 20
             }
         }
 
@@ -141,7 +156,7 @@ Item {
                 anchors.bottomMargin: 0
                 anchors.leftMargin: 0
 
-                onPressed: Camera.zoom += 0.15
+                onPressed: camerawrapper.zoom *= 1.3
             }
         }
 
@@ -162,7 +177,7 @@ Item {
                 anchors.bottomMargin: 0
                 anchors.leftMargin: 0
 
-                onClicked: Camera.resetPosition()
+                onClicked: { camerawrapper.yaw = 0; camerawrapper.pitch = 0 }
             }
         }
 
@@ -183,7 +198,7 @@ Item {
                 anchors.bottomMargin: 0
                 anchors.leftMargin: 0
 
-                onPressed: Camera.zoom -= 0.15
+                onPressed: camerawrapper.zoom /= 1.3
             }
         }
     }
@@ -305,7 +320,4 @@ Item {
             }
         }
     ]
-
-
-
 }

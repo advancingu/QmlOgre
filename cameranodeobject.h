@@ -34,9 +34,6 @@ public:
     { m_pitch = p; updateRotation(); }
     void setZoom(qreal z);
 
-public Q_SLOTS:
-    void resetPosition();
-
 private:
     void updateRotation();
 
