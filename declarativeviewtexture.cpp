@@ -32,7 +32,6 @@ DeclarativeViewTexture::DeclarativeViewTexture(QWidget *parent) :
 {
     setAttribute(Qt::WA_DontShowOnScreen);
     setOptimizationFlag(QGraphicsView::IndirectPainting);
-    setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
 
     glGenTextures(1, &m_textureId);
 }
@@ -51,6 +50,7 @@ void DeclarativeViewTexture::paintEvent(QPaintEvent *event)
     QImage im(exposedRegion.boundingRect().size(), QImage::Format_ARGB32_Premultiplied);
     im.fill(Qt::transparent);
     m_bufferPainter->begin(&im);
+    m_bufferPainter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     m_bufferPainter->translate(-exposedRegion.boundingRect().topLeft());
     m_bufferPainter->setClipRegion(exposedRegion);
     QDeclarativeView::paintEvent(event);
