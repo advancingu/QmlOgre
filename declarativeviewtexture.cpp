@@ -32,6 +32,7 @@ DeclarativeViewTexture::DeclarativeViewTexture(QWidget *parent) :
 {
     setAttribute(Qt::WA_DontShowOnScreen);
     setOptimizationFlag(QGraphicsView::IndirectPainting);
+    setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
 
     glGenTextures(1, &m_textureId);
 }

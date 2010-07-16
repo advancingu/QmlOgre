@@ -1,6 +1,7 @@
 #include "ogrewidget.h"
 
 #include "declarativeviewtexture.h"
+#include "cameranodeobject.h"
 
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
@@ -10,6 +11,7 @@
 #include <OgreEntity.h>
 #include <OgreResourceGroupManager.h>
 #include <OgreMaterialManager.h>
+#include <QtDeclarative/QDeclarativeContext>
 #include <QtCore/QDebug>
 
 #if defined(Q_WS_X11)
@@ -23,6 +25,7 @@ OgreWidget::OgreWidget(QWidget *parent) :
     m_sceneManager(0),
     m_renderWindow(0),
     m_viewport(0),
+    m_cameraObject(0),
     m_QmlUI(0)
 {
     setAutoBufferSwap(false);
@@ -48,6 +51,7 @@ OgreWidget::~OgreWidget()
     }
 
     delete m_root;
+    delete m_cameraObject;
 }
 
 void OgreWidget::paintGL()
@@ -107,7 +111,8 @@ void OgreWidget::initializeGL()
 
     m_QmlUI = new DeclarativeViewTexture(this);
     m_QmlUI->setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    m_QmlUI->setSource(QUrl("example.qml"));
+    m_QmlUI->setSource(QUrl("resources/example.qml"));
+    m_QmlUI->rootContext()->setContextProperty("Camera", m_cameraObject);
 }
 
 void OgreWidget::resizeGL(int w, int h)
@@ -169,19 +174,18 @@ void OgreWidget::initOgre()
     m_renderWindow->setVisible(true);
 
     // Load resources
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation("data.zip", "Zip");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation("resources/data.zip", "Zip");
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     // Setup scene
     m_sceneManager = m_root->createSceneManager(Ogre::ST_GENERIC, "mySceneManager");
     m_camera = m_sceneManager->createCamera("myCamera");
-    m_camera->setNearClipDistance(200);
+    m_camera->setNearClipDistance(1);
     m_camera->setFarClipDistance(99999);
     m_viewport = m_renderWindow->addViewport(m_camera);
     m_viewport->setBackgroundColour(Ogre::ColourValue(1, 1, 1));
     m_viewport->setClearEveryFrame(true);
     m_camera->setAspectRatio(Ogre::Real(width()) / Ogre::Real(height()));
-    //m_camera->setFOVy(Ogre::Radian(Ogre::Degree(20)));
 
     // Setup content...
 
@@ -194,6 +198,8 @@ void OgreWidget::initOgre()
 
     // create an ogre head entity and place it at the origin
     m_sceneManager->getRootSceneNode()->attachObject(m_sceneManager->createEntity("Head", "ogrehead.mesh"));
-    m_camera->move(Ogre::Vector3(0, 0, 300));
-    m_camera->lookAt(0, 0, 0);
+
+    // Setup the camera
+    m_cameraObject = new CameraNodeObject(m_camera);
+    m_cameraObject->camera()->setAutoTracking(true, m_sceneManager->getRootSceneNode());
 }

@@ -16,6 +16,7 @@ class Viewport;
 class RenderTarget;
 }
 class DeclarativeViewTexture;
+class CameraNodeObject;
 
 class OgreWidget : public QGLWidget
 {
@@ -49,6 +50,8 @@ private:
     Ogre::SceneManager *m_sceneManager;
     Ogre::RenderWindow *m_renderWindow;
     Ogre::Viewport *m_viewport;
+
+    CameraNodeObject *m_cameraObject;
 
     DeclarativeViewTexture *m_QmlUI;
 };
