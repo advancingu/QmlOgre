@@ -28,19 +28,16 @@ Item {
         radius: 15
         gradient: Gradient {
             GradientStop {
-                id: gradientstop3
                 position: 0
                 color: "#6f6f6f"
             }
 
             GradientStop {
-                id: gradientstop4
                 position: 0.27
                 color: "#141414"
             }
 
             GradientStop {
-                id: gradientstop5
                 position: 1
                 color: "#50000000"
             }
@@ -254,13 +251,11 @@ Item {
         radius: 5
         gradient: Gradient {
             GradientStop {
-                id: gradientstop1
                 position: 0
                 color: "#c83e3e3e"
             }
 
             GradientStop {
-                id: gradientstop2
                 position: 1
                 color: "#c8919191"
             }
@@ -305,6 +300,58 @@ Item {
             anchors.leftMargin: 6
             anchors.topMargin: 6
             anchors.fill: parent
+        }
+        border.width: 2
+        z: -1
+    }
+
+    Rectangle {
+        id: rectangle12
+        x: 132
+        width: 25
+        height: 25
+        radius: 5
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: "#c83e3e3e"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#c8919191"
+            }
+        }
+        anchors.top: rectangle2.top
+        anchors.right: rectangle1.right
+        anchors.rightMargin: 5
+        border.color: "#1a1a1a"
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: Window.fullScreen ? Window.showNormal() : Window.showFullScreen()
+        }
+
+        Rectangle {
+            id: rectangle13
+            color: "#28ffffff"
+            radius: 2
+            border.width: 2
+            border.color: "#000000"
+            anchors.rightMargin: 7
+            anchors.leftMargin: 7
+            anchors.topMargin: 7
+            anchors.bottomMargin: 7
+            anchors.fill: parent
+
+            Rectangle {
+                id: rectangle14
+                height: 3
+                color: "#000000"
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.top: parent.top
+            }
         }
         border.width: 2
         z: -1

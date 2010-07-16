@@ -113,6 +113,7 @@ void OgreWidget::initializeGL()
     m_QmlUI->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     m_QmlUI->setSource(QUrl("resources/example.qml"));
     m_QmlUI->rootContext()->setContextProperty("Camera", m_cameraObject);
+    m_QmlUI->rootContext()->setContextProperty("Window", this);
 }
 
 void OgreWidget::resizeGL(int w, int h)
