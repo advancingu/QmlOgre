@@ -60,7 +60,6 @@ Item {
             id: image1
             width: 135
             height: 31
-            opacity: 0.8
             anchors.top: parent.top
             anchors.topMargin: 9
             anchors.right: parent.right
@@ -69,7 +68,7 @@ Item {
             anchors.leftMargin: 0
             fillMode: "PreserveAspectFit"
             smooth: true
-            source: "logo.png"
+            source: "qt-logo.png"
         }
 
         Rectangle {
