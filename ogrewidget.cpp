@@ -13,10 +13,26 @@
 #include <OgreMaterialManager.h>
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtCore/QDebug>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
 
 #if defined(Q_WS_X11)
 #include <QX11Info>
 #endif
+
+static QString appPath()
+{
+    QString path = QCoreApplication::applicationDirPath();
+    QDir dir(path);
+#ifdef Q_WS_MAC
+    dir.cdUp();
+    dir.cdUp();
+    dir.cdUp();
+#elif defined(Q_WS_WIN)
+    dir.cdUp();
+#endif
+    return dir.absolutePath();
+}
 
 OgreWidget::OgreWidget(QWidget *parent) :
     QGLWidget(parent),
@@ -111,7 +127,7 @@ void OgreWidget::initializeGL()
 
     m_QmlUI = new DeclarativeViewTexture(this);
     m_QmlUI->setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    m_QmlUI->setSource(QUrl("resources/example.qml"));
+    m_QmlUI->setSource(QUrl(QString(appPath() + "/resources/example.qml")));
     m_QmlUI->rootContext()->setContextProperty("Camera", m_cameraObject);
     m_QmlUI->rootContext()->setContextProperty("Window", this);
 }
@@ -175,7 +191,7 @@ void OgreWidget::initOgre()
     m_renderWindow->setVisible(true);
 
     // Load resources
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation("resources/data.zip", "Zip");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toAscii().data(), "Zip");
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     // Setup scene
