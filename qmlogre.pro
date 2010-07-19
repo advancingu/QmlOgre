@@ -25,7 +25,11 @@ macx {
     CONFIG += link_pkgconfig
     PKGCONFIG += OGRE
     OGRELIBDIR = $$system(pkg-config --libs-only-L OGRE)
-    OGRELIBDIR = $$replace(OGRELIBDIR, -L,)
+    isEmpty(OGRELIBDIR) {
+        OGRELIBDIR = /usr/lib
+    } else {
+        OGRELIBDIR = $$replace(OGRELIBDIR, -L,)
+    }
     OGREPLUGINDIR = $$OGRELIBDIR/OGRE
     DEFINES += OGRE_PLUGIN_VAR=\"$$OGREPLUGINDIR\"
 } else:win32 {

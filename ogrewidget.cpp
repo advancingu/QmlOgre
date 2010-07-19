@@ -211,7 +211,7 @@ void OgreWidget::initOgre()
 
     // setup some basic lighting for our scene
     m_sceneManager->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
-    m_sceneManager->createLight()->setPosition(20, 80, 50);
+    m_sceneManager->createLight("myLight")->setPosition(20, 80, 50);
 
     // create an ogre head entity and place it at the origin
     m_sceneManager->getRootSceneNode()->attachObject(m_sceneManager->createEntity("Head", "ogrehead.mesh"));
