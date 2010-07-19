@@ -117,6 +117,7 @@ void OgreWidget::paintGL()
 void OgreWidget::timerEvent(QTimerEvent *e)
 {
     Q_UNUSED(e)
+    makeCurrent();
     paintGL();
     swapBuffers();
 }
