@@ -58,12 +58,14 @@ void DeclarativeViewTexture::paintEvent(QPaintEvent *event)
 
     // Upload the image in graphics memory
     glBindTexture(GL_TEXTURE_2D, m_textureId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     qgl_byteSwapImage(im, GL_UNSIGNED_BYTE);
     foreach (const QRect &rect, exposedRegion.rects()) {
         if (rect.size() == size()) {
             glTexImage2D(GL_TEXTURE_2D, 0, 4, rect.width(), rect.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, im.bits());
-            glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-            glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
             break;
         } else {
             QRect adjustedRect = rect.translated(-exposedRegion.boundingRect().topLeft());

@@ -87,6 +87,10 @@ void OgreWidget::paintGL()
 
     // Render the QDeclarativeView texture on top
     glBindTexture(GL_TEXTURE_2D, m_QmlUI->textureId());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -105,10 +109,10 @@ void OgreWidget::paintGL()
     float right = (rect().center().x() - m_QmlUI->pos().x() - m_QmlUI->width()) / float(-rect().center().x());
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex3f(left, top, -1.0f); // Top Left
-    glTexCoord2f(0, 1); glVertex3f(left, bottom, -1.0f); // Bottom Left
-    glTexCoord2f(1, 1); glVertex3f(right, bottom, -1.0f); // Bottom Right
-    glTexCoord2f(1, 0); glVertex3f(right, top, -1.0f); // Top Right
+    glTexCoord2f(0.0, 0.0); glVertex3f(left, top, -1.0f); // Top Left
+    glTexCoord2f(0.0, 1.0); glVertex3f(left, bottom, -1.0f); // Bottom Left
+    glTexCoord2f(1.0, 1.0); glVertex3f(right, bottom, -1.0f); // Bottom Right
+    glTexCoord2f(1.0, 0.0); glVertex3f(right, top, -1.0f); // Top Right
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);
