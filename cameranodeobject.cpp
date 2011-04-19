@@ -4,6 +4,8 @@
 #include <OgreSceneNode.h>
 #include <OgreCamera.h>
 
+#include <QDebug>
+
 static const Ogre::Vector3 initialPosition(0, 0, 300);
 
 CameraNodeObject::CameraNodeObject(Ogre::Camera *cam, QObject *parent) :

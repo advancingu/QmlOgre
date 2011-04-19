@@ -57,14 +57,14 @@ MOC_DIR = ./.moc
 
 
 SOURCES += main.cpp \
-    ogrewidget.cpp \
-    declarativeviewtexture.cpp \
-    cameranodeobject.cpp
+    cameranodeobject.cpp \
+    ogreitem.cpp \
+    ogrenode.cpp
 
 HEADERS += \
-    ogrewidget.h \
-    declarativeviewtexture.h \
-    cameranodeobject.h
+    cameranodeobject.h \
+    ogreitem.h \
+    ogrenode.h
 
 OTHER_FILES += \
     resources/example.qml

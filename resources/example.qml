@@ -1,10 +1,205 @@
-import Qt 4.7
+import QtQuick 2.0
+import Ogre 1.0
 
-Item {
-    id: item1
+Rectangle {
+    id: ogre
     width: 1024
     height: 768
-    clip: true
+    gradient: Gradient {
+        GradientStop { position: 0.0; color: "#000000" }
+        GradientStop { position: 0.40; color: "#232323" }
+        GradientStop { position: 0.55; color: "#232323" }
+        GradientStop { position: 0.85; color: "#000000" }
+        GradientStop { position: 1.0; color: "#000000" }
+    }
+
+
+
+    OgreItem {
+        id: ogreitem
+        width: 600; height: 400
+        anchors.left: toolbar1.left
+        anchors.leftMargin: -5
+        anchors.top: toolbar1.bottom
+        anchors.topMargin: 6
+
+        Behavior on opacity { NumberAnimation { } }
+        Behavior on width { NumberAnimation { } }
+        Behavior on height { NumberAnimation { } }
+
+        states: [
+            State {
+                name: "State1"
+
+                PropertyChanges {
+                    target: ogreitem
+                    width: ogre.width
+                    height: ogre.height
+                }
+                PropertyChanges {
+                    target: toolbar1
+                    x: 5
+                    y: -toolbar1.height - 6
+                }
+
+                PropertyChanges {
+                    target: toolbar3
+                    anchors.top: ogreitem.top
+                    anchors.topMargin: 5
+                }
+            }
+        ]
+    }
+
+    Rectangle {
+        id: toolbar1
+        x: 200
+        y: 200
+        width: 25
+        height: 25
+        radius: 5
+        Behavior on x { NumberAnimation { } }
+        Behavior on y { NumberAnimation { } }
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: "#c83e3e3e"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#c8919191"
+            }
+        }
+
+        border.width: 2
+        border.color: "#1a1a1a"
+
+        Image {
+            anchors.rightMargin: 5
+            anchors.leftMargin: 5
+            anchors.bottomMargin: 5
+            anchors.topMargin: 5
+            anchors.fill: parent
+            smooth: true
+            fillMode: "Stretch"
+            source: "move.gif"
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            drag.target: toolbar1
+            drag.axis: "XandYAxis"
+            drag.minimumX: 0
+            drag.minimumY: 0
+            drag.maximumX: ogre.width - toolbar1.width
+            drag.maximumY: ogre.height - toolbar1.height
+        }
+    }
+
+    Rectangle {
+        id: toolbar2
+        width: 25
+        radius: 5
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: "#c83e3e3e"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#c8919191"
+            }
+        }
+        anchors.left: toolbar1.right
+        anchors.leftMargin: 6
+        anchors.top: toolbar1.top
+        anchors.bottom: toolbar1.bottom
+        border.color: "#1a1a1a"
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: ogreitem.opacity = ogreitem.opacity == 1 ? 0 : 1
+        }
+
+        Rectangle {
+            id: toolbar22
+            x: 0
+            y: -2
+            radius: 12
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#5a5a5a"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#000000"
+                }
+            }
+            rotation: -35
+            anchors.rightMargin: 6
+            anchors.bottomMargin: 6
+            anchors.leftMargin: 6
+            anchors.topMargin: 6
+            anchors.fill: parent
+        }
+        border.width: 2
+    }
+
+    Rectangle {
+        id: toolbar3
+        width: 25
+        height: 25
+        radius: 5
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: "#c83e3e3e"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#c8919191"
+            }
+        }
+        anchors.top: toolbar1.top
+        anchors.right: ogreitem.right
+        anchors.rightMargin: 5
+        border.color: "#1a1a1a"
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: { ogreitem.state = ogreitem.state == '' ? 'State1' : '' }
+        }
+
+        Rectangle {
+            id: toolbar31
+            color: "#28ffffff"
+            radius: 2
+            border.width: 2
+            border.color: "#000000"
+            anchors.rightMargin: 7
+            anchors.leftMargin: 7
+            anchors.topMargin: 7
+            anchors.bottomMargin: 7
+            anchors.fill: parent
+
+            Rectangle {
+                id: toolbar311
+                height: 3
+                color: "#000000"
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.top: parent.top
+            }
+        }
+        border.width: 2
+    }
 
     Item {
         id: camerawrapper
@@ -12,9 +207,9 @@ Item {
         property real pitch: 0
         property real zoom: 1
 
-        onYawChanged: Camera.yaw = yaw
-        onPitchChanged: Camera.pitch = pitch
-        onZoomChanged: Camera.zoom = zoom
+        onYawChanged: ogreitem.camera.yaw = yaw
+        onPitchChanged: ogreitem.camera.pitch = pitch
+        onZoomChanged: ogreitem.camera.zoom = zoom
 
         Behavior on yaw { NumberAnimation{ } }
         Behavior on pitch { NumberAnimation{ } }
@@ -46,7 +241,6 @@ Item {
         anchors.leftMargin: -5
         anchors.top: rectangle2.bottom
         anchors.topMargin: 6
-        z: 0
         border.width: 4
         border.color: "#1a1a1a"
         clip: false
@@ -269,7 +463,6 @@ Item {
 
         border.width: 2
         border.color: "#1a1a1a"
-        z: -1
 
         Image {
             id: image2
@@ -289,8 +482,8 @@ Item {
             drag.axis: "XandYAxis"
             drag.minimumX: 0
             drag.minimumY: 0
-            drag.maximumX: item1.width - rectangle2.width
-            drag.maximumY: item1.height - rectangle2.height
+            drag.maximumX: ogre.width - rectangle2.width
+            drag.maximumY: ogre.height - rectangle2.height
         }
     }
 
@@ -321,10 +514,10 @@ Item {
             drag.axis: "XandYAxis"
             drag.minimumX: 0
             drag.target: rectangle10
-            drag.maximumY: item1.height - rectangle10.height
-            drag.maximumX: item1.width - rectangle10.width
+            drag.maximumY: ogre.height - rectangle10.height
+            drag.maximumX: ogre.width - rectangle10.width
 
-            onClicked: item1.state = item1.state == '' ? 'State1' : ''
+            onClicked: ogre.state = ogre.state == '' ? 'State1' : ''
         }
 
         Rectangle {
@@ -351,12 +544,10 @@ Item {
             anchors.fill: parent
         }
         border.width: 2
-        z: -1
     }
 
     Rectangle {
         id: rectangle12
-        x: 132
         width: 25
         height: 25
         radius: 5
@@ -403,7 +594,6 @@ Item {
             }
         }
         border.width: 2
-        z: -1
     }
     states: [
         State {
