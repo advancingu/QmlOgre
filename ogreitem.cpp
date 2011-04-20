@@ -2,34 +2,21 @@
 #include "ogrenode.h"
 #include "cameranodeobject.h"
 
+#include <QtCore/QPropertyAnimation>
+
 OgreItem::OgreItem(QSGItem *parent)
     : QSGItem(parent)
     , m_timerID(0)
+    , m_fakeAnim(this, "")
 {
     setFlag(ItemHasContents);
-    setTargetFPS(60);
-}
 
-void OgreItem::setTargetFPS(int fps)
-{
-    if (fps == m_targetFPS)
-        return;
-
-    m_targetFPS = fps;
-
-    if (m_timerID)
-        killTimer(m_timerID);
-    //m_timerID = startTimer(1000 / m_targetFPS);
-
-    emit targetFPSChanged();
-}
-
-void OgreItem::timerEvent(QTimerEvent *e)
-{
-    if (e->timerId() != m_timerID)
-        return;
-
-    update();
+    // Hack to get continuous updates
+    m_fakeAnim.setDuration(10000);
+    m_fakeAnim.setStartValue(0);
+    m_fakeAnim.setEndValue(1);
+    m_fakeAnim.setLoopCount(-1);
+    m_fakeAnim.start();
 }
 
 QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
