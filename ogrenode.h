@@ -31,12 +31,19 @@ public:
     void setSize(const QSize &size);
     QSize size() const { return m_size; }
 
+    void setAAEnabled(bool enable);
+
     CameraNodeObject *camera() const { return m_cameraObject; }
 
     void update();
-    void updateSize();
+    void updateFBO();
 
     void init();
+
+    GLuint getOgreFBO();
+
+    void saveOgreState();
+    void restoreOgreState();
 
     void preprocess();
 
@@ -46,6 +53,8 @@ private:
     QSGGeometry m_geometry;
     QSGPlainTexture *m_texture;
 
+    int m_samples;
+    bool m_AAEnabled;
     QSize m_size;
 
     Ogre::Root *m_root;
@@ -56,10 +65,12 @@ private:
     Ogre::TexturePtr rtt_texture;
     Ogre::RenderWindow *m_window;
 
+    GLuint m_ogreFBO;
+
     CameraNodeObject *m_cameraObject;
 
     bool m_initialized;
-    bool m_dirtySize;
+    bool m_dirtyFBO;
 };
 
 #endif // OGRENODE_H

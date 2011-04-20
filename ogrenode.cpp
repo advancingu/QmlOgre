@@ -1,4 +1,6 @@
 #include <OGRE/RenderSystems/GL/OgreGLTexture.h>
+#include <OGRE/RenderSystems/GL/OgreGLFrameBufferObject.h>
+#include <OGRE/RenderSystems/GL/OgreGLFBORenderTexture.h>
 
 #include "ogrenode.h"
 #include "cameranodeobject.h"
@@ -27,8 +29,12 @@ OgreNode::OgreNode()
     : QSGGeometryNode()
     , m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
     , m_texture(0)
+    , m_samples(0)
+    , m_AAEnabled(false)
+    , m_renderTexture(0)
+    , m_ogreFBO(0)
     , m_initialized(false)
-    , m_dirtySize(false)
+    , m_dirtyFBO(false)
 {
     setMaterial(&m_materialO);
     setOpaqueMaterial(&m_material);
@@ -955,38 +961,66 @@ static void printGLState()
     qDebug() << "============";
 }
 
-void OgreNode::preprocess()
+void OgreNode::saveOgreState()
 {
-    glPopAttrib();
+    m_ogreFBO = getOgreFBO();
+
     const QGLContext *ctx = QGLContext::currentContext();
-    ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 2);
-    ctx->functions()->glUseProgram(0);
-
-    m_renderTexture->update(false);
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-
     ctx->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
     ctx->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     ctx->functions()->glBindRenderbuffer(GL_RENDERBUFFER, 0);
     ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+}
+
+void OgreNode::restoreOgreState()
+{
+    const QGLContext *ctx = QGLContext::currentContext();
+    glPopAttrib();
+    ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFBO);
+    ctx->functions()->glUseProgram(0);
+}
+
+GLuint OgreNode::getOgreFBO()
+{
+    if (!m_renderTexture)
+        return 0;
+
+    Ogre::GLFrameBufferObject *ogreFbo = 0;
+    m_renderTexture->getCustomAttribute("FBO", &ogreFbo);
+    Ogre::GLFBOManager *manager = ogreFbo->getManager();
+    manager->bind(m_renderTexture);
+
+    GLint id;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &id);
+
+    const QGLContext *ctx = QGLContext::currentContext();
+    ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+
+    return id;
+}
+
+void OgreNode::preprocess()
+{
+    restoreOgreState();
+    m_renderTexture->update(true);
+    saveOgreState();
 }
 
 void OgreNode::update()
 {
+    restoreOgreState();
+
     if (!m_initialized)
         init();
 
-    if (m_dirtySize)
-        updateSize();
+    if (m_dirtyFBO)
+        updateFBO();
 
-    const QGLContext *ctx = QGLContext::currentContext();
-    ctx->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
-    ctx->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    ctx->functions()->glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+    saveOgreState();
 }
 
-void OgreNode::updateSize()
+void OgreNode::updateFBO()
 {
     if (m_renderTexture)
         Ogre::TextureManager::getSingleton().remove("RttTex");
@@ -998,7 +1032,8 @@ void OgreNode::updateSize()
                                                                     m_size.height(),
                                                                     0,
                                                                     Ogre::PF_R8G8B8A8,
-                                                                    Ogre::TU_RENDERTARGET);
+                                                                    Ogre::TU_RENDERTARGET, 0, false,
+                                                                    m_AAEnabled ? m_samples : 0);
 
     m_renderTexture = rtt_texture->getBuffer()->getRenderTarget();
 
@@ -1013,7 +1048,6 @@ void OgreNode::updateSize()
     QSGGeometry::updateTexturedRectGeometry(&m_geometry,
                                             QRectF(0, 0, m_size.width(), m_size.height()),
                                             QRectF(0, 0, 1, 1));
-
 
     Ogre::GLTexture *nativeTexture = static_cast<Ogre::GLTexture *>(rtt_texture.get());
 
@@ -1033,12 +1067,26 @@ void OgreNode::setSize(const QSize &size)
         return;
 
     m_size = size;
-    m_dirtySize = true;
+    m_dirtyFBO = true;
     markDirty(DirtyGeometry);
+}
+
+void OgreNode::setAAEnabled(bool enable)
+{
+    if (m_AAEnabled == enable)
+        return;
+
+    m_AAEnabled = enable;
+    m_dirtyFBO = true;
+    markDirty(DirtyMaterial);
 }
 
 void OgreNode::init()
 {
+    const QGLContext *ctx = QGLContext::currentContext();
+    QGLFormat format = ctx->format();
+    m_samples = format.sampleBuffers() ? format.samples() : 0;
+
     m_root = new Ogre::Root;
     m_root->loadPlugin(Ogre::String(OGRE_PLUGIN_DIR) + "/RenderSystem_GL");
 

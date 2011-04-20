@@ -44,6 +44,7 @@ QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         node = new OgreNode();
 
     node->setSize(QSize(width(), height()));
+    node->setAAEnabled(smooth());
     node->update();
 
     m_camera = static_cast<QObject *>(node->camera());

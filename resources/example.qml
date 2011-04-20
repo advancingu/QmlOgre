@@ -5,15 +5,14 @@ Rectangle {
     id: ogre
     width: 1024
     height: 768
-    gradient: Gradient {
-        GradientStop { position: 0.0; color: "#000000" }
-        GradientStop { position: 0.40; color: "#232323" }
-        GradientStop { position: 0.55; color: "#232323" }
-        GradientStop { position: 0.85; color: "#000000" }
-        GradientStop { position: 1.0; color: "#000000" }
+    color: "black"
+
+    Image {
+        id: back
+        anchors.fill: parent
+        source: "GrassandSky.jpg"
+        Behavior on opacity { NumberAnimation { } }
     }
-
-
 
     OgreItem {
         id: ogreitem
@@ -43,9 +42,18 @@ Rectangle {
                 }
 
                 PropertyChanges {
+                    target: toolbar4
+                    anchors.top: ogreitem.top
+                    anchors.topMargin: 5
+                }
+                PropertyChanges {
                     target: toolbar3
                     anchors.top: ogreitem.top
                     anchors.topMargin: 5
+                }
+                PropertyChanges {
+                    target: back
+                    opacity: 0
                 }
             }
         ]
@@ -148,6 +156,52 @@ Rectangle {
             anchors.topMargin: 6
             anchors.fill: parent
         }
+        border.width: 2
+    }
+
+    Rectangle {
+        id: toolbar4
+        width: 25
+        height: 25
+        radius: 5
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: "#c83e3e3e"
+            }
+
+            GradientStop {
+                position: 1
+                color: "#c8919191"
+            }
+        }
+        anchors.top: toolbar1.top
+        anchors.right: toolbar3.left
+        anchors.rightMargin: 6
+        border.color: "#1a1a1a"
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: { ogreitem.smooth = !ogreitem.smooth }
+        }
+
+        Text {
+            anchors.fill: parent
+            text: "AA"
+            font.bold: true
+            font.pixelSize: parent.height * 0.55
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+
+            Rectangle {
+                height: parent.height
+                width: 2
+                anchors.centerIn: parent
+                color: "#BB1111"
+                rotation: 40
+                visible: !ogreitem.smooth
+            }
+         }
         border.width: 2
     }
 
