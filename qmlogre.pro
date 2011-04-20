@@ -39,12 +39,12 @@ macx {
     } else {
         message(Using Ogre libraries in $$OGREDIR)
         INCLUDEPATH += $$OGREDIR/include/OGRE
-        LIBS += -L$$OGREDIR/lib -lOgreMain
+        LIBS += -L$$OGREDIR/lib/release -L$$OGREDIR/lib/release/opt -lOgreMain -lRenderSystem_GL
 
         BOOSTDIR = $$OGREDIR/boost_1_42
         !isEmpty(BOOSTDIR) {
             INCLUDEPATH += $$BOOSTDIR
-            LIBS += -L$$BOOSTDIR/lib -lboost_date_time-xgcc40-mt-1_42 -lboost_thread-xgcc40-mt-1_42
+            LIBS += -L$$BOOSTDIR/lib -llibboost_date_time-vc90-mt-1_42 -llibboost_thread-vc90-mt-1_42
         }
 
         DEFINES += OGRE_PLUGIN_VAR=\\\"$$OGREDIR/bin\\\"

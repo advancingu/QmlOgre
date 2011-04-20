@@ -1,6 +1,6 @@
-#include <OGRE/RenderSystems/GL/OgreGLTexture.h>
-#include <OGRE/RenderSystems/GL/OgreGLFrameBufferObject.h>
-#include <OGRE/RenderSystems/GL/OgreGLFBORenderTexture.h>
+#include <RenderSystems/GL/OgreGLTexture.h>
+#include <RenderSystems/GL/OgreGLFrameBufferObject.h>
+#include <RenderSystems/GL/OgreGLFBORenderTexture.h>
 
 #include "ogrenode.h"
 #include "cameranodeobject.h"
