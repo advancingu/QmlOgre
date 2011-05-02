@@ -39,15 +39,28 @@ macx {
     } else {
         message(Using Ogre libraries in $$OGREDIR)
         INCLUDEPATH += $$OGREDIR/include/OGRE
-        LIBS += -L$$OGREDIR/lib/release -L$$OGREDIR/lib/release/opt -lOgreMain -lRenderSystem_GL
+        CONFIG(release, debug|release) {
+            LIBS += -L$$OGREDIR/lib/release -L$$OGREDIR/lib/release/opt -lOgreMain -lRenderSystem_GL
+        } else {
+            LIBS += -L$$OGREDIR/lib/debug -L$$OGREDIR/lib/debug/opt -lOgreMain_d -lRenderSystem_GL_d
+        }
 
         BOOSTDIR = $$OGREDIR/boost_1_42
         !isEmpty(BOOSTDIR) {
             INCLUDEPATH += $$BOOSTDIR
-            LIBS += -L$$BOOSTDIR/lib -llibboost_date_time-vc90-mt-1_42 -llibboost_thread-vc90-mt-1_42
+            CONFIG(release, debug|release) {
+                LIBS += -L$$BOOSTDIR/lib -llibboost_date_time-vc90-mt-1_42 -llibboost_thread-vc90-mt-1_42
+            } else {
+                LIBS += -L$$BOOSTDIR/lib -llibboost_date_time-vc90-mt-gd-1_42 -llibboost_thread-vc90-mt-gd-1_42
+            }
         }
 
-        DEFINES += OGRE_PLUGIN_VAR=\\\"$$OGREDIR/bin\\\"
+        CONFIG(release, debug|release) {
+            DEFINES += OGRE_PLUGIN_VAR=\\\"$$OGREDIR/bin/release\\\"
+        } else {
+            DEFINES += OGRE_PLUGIN_VAR=\\\"$$OGREDIR/bin/debug\\\"
+            DEFINES += DEBUG_PLUGIN=1
+        }
     }
 }
 
