@@ -10,13 +10,14 @@ macx {
     } else {
         message(Using Ogre libraries in $$OGREDIR)
         INCLUDEPATH += $$OGREDIR/include/OGRE
+        INCLUDEPATH += $$OGREDIR/include/OGRE/RenderSystems/GL
         QMAKE_LFLAGS += -F$$OGREDIR/lib/release
         LIBS += -framework Ogre
 
         BOOSTDIR = $$OGREDIR/boost_1_42
         !isEmpty(BOOSTDIR) {
             INCLUDEPATH += $$BOOSTDIR
-            LIBS += -L$$BOOSTDIR/lib -lboost_date_time-xgcc40-mt-1_42 -lboost_thread-xgcc40-mt-1_42
+#            LIBS += -L$$BOOSTDIR/lib -lboost_date_time-xgcc40-mt-1_42 -lboost_thread-xgcc40-mt-1_42
         }
 
         DEFINES += OGRE_PLUGIN_VAR=\"$$OGREDIR/lib\"
@@ -39,6 +40,7 @@ macx {
     } else {
         message(Using Ogre libraries in $$OGREDIR)
         INCLUDEPATH += $$OGREDIR/include/OGRE
+        INCLUDEPATH += $$OGREDIR/include/OGRE/RenderSystems/GL
         CONFIG(release, debug|release) {
             LIBS += -L$$OGREDIR/lib/release -L$$OGREDIR/lib/release/opt -lOgreMain -lRenderSystem_GL
         } else {
