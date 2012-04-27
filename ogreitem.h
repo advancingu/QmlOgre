@@ -37,28 +37,29 @@
 #ifndef OGREITEM_H
 #define OGREITEM_H
 
-#include <QSGItem>
+#include <QtQuick/QQuickItem>
 #include <QtCore/QPropertyAnimation>
 
 class CameraNodeObject;
 
-class OgreItem : public QSGItem
+class OgreItem : public QQuickItem
 {
     Q_OBJECT
 
     Q_PROPERTY(QObject *camera READ camera)
 
 public:
-    OgreItem(QSGItem *parent = 0);
+    OgreItem(QQuickItem *parent = 0);
 
     QObject *camera() const { return m_camera; }
 
 protected:
     virtual QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *);
 
+    void timerEvent(QTimerEvent *);
+
 private:
     int m_timerID;
-    QPropertyAnimation m_fakeAnim;
 
     QObject *m_camera;
 };

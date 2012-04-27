@@ -37,8 +37,8 @@
 #ifndef OGRENODE_H
 #define OGRENODE_H
 
-#include <QSGGeometryNode>
-#include "qsgtexturematerial.h"
+#include <QtQuick/QSGGeometryNode>
+#include <QtQuick/qsgtexturematerial.h>
 #include <private/qsgtexture_p.h>
 
 #include <OgreTexture.h>
@@ -85,7 +85,7 @@ public:
 
 private:
     QSGTextureMaterial m_material;
-    QSGTextureMaterialWithOpacity m_materialO;
+    QSGOpaqueTextureMaterial m_materialO;
     QSGGeometry m_geometry;
     QSGPlainTexture *m_texture;
 

@@ -40,19 +40,14 @@
 
 #include <QtCore/QPropertyAnimation>
 
-OgreItem::OgreItem(QSGItem *parent)
-    : QSGItem(parent)
+OgreItem::OgreItem(QQuickItem *parent)
+    : QQuickItem(parent)
     , m_timerID(0)
-    , m_fakeAnim(this, "")
 {
     setFlag(ItemHasContents);
+    setSmooth(false);
 
-    // Hack to get continuous updates
-    m_fakeAnim.setDuration(10000);
-    m_fakeAnim.setStartValue(0);
-    m_fakeAnim.setEndValue(1);
-    m_fakeAnim.setLoopCount(-1);
-    m_fakeAnim.start();
+    startTimer(16);
 }
 
 QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
@@ -73,4 +68,9 @@ QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     m_camera = static_cast<QObject *>(node->camera());
 
     return node;
+}
+
+void OgreItem::timerEvent(QTimerEvent *)
+{
+    update();
 }

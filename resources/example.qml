@@ -46,9 +46,10 @@ Rectangle {
     Image {
         id: back
         anchors.fill: parent
-        source: "GrassandSky.jpg"
+        source: "GrassandSky.png"
         Behavior on opacity { NumberAnimation { } }
     }
+
 
     OgreItem {
         id: ogreitem
@@ -57,6 +58,7 @@ Rectangle {
         anchors.leftMargin: -5
         anchors.top: toolbar1.bottom
         anchors.topMargin: 6
+
 
         Behavior on opacity { NumberAnimation { } }
         Behavior on width { NumberAnimation { } }
@@ -93,6 +95,31 @@ Rectangle {
                 }
             }
         ]
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property int prevX: -1
+            property int prevY: -1
+
+            onPositionChanged: {
+                if (pressedButtons & Qt.LeftButton) {
+                    if (prevX > -1)
+                        ogreitem.camera.yaw -= (mouse.x - prevX) / 2
+                    if (prevY > -1)
+                        ogreitem.camera.pitch -= (mouse.y - prevY) / 2
+                    prevX = mouse.x
+                    prevY = mouse.y
+                }
+                if (pressedButtons & Qt.RightButton) {
+                    if (prevY > -1)
+                        ogreitem.camera.zoom = Math.min(6, Math.max(0.1, ogreitem.camera.zoom - (mouse.y - prevY) / 100));
+                    prevY = mouse.y
+                }
+            }
+            onReleased: { prevX = -1; prevY = -1 }
+        }
     }
 
     Rectangle {
@@ -658,8 +685,15 @@ Rectangle {
         border.color: "#1a1a1a"
 
         MouseArea {
+            property bool fullscreen: false
             anchors.fill: parent
-            onClicked: Window.fullScreen ? Window.showNormal() : Window.showFullScreen()
+            onClicked: {
+                if (fullscreen)
+                    Window.showNormal();
+                else
+                    Window.showFullScreen();
+                fullscreen = !fullscreen;
+            }
         }
 
         Rectangle {

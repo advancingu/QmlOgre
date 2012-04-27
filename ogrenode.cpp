@@ -72,8 +72,8 @@ OgreNode::OgreNode()
     , m_initialized(false)
     , m_dirtyFBO(false)
 {
-    setMaterial(&m_materialO);
-    setOpaqueMaterial(&m_material);
+    setMaterial(&m_material);
+    setOpaqueMaterial(&m_materialO);
     setGeometry(&m_geometry);
     setFlag(UsePreprocess);
 }
