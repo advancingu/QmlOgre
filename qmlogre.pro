@@ -1,5 +1,5 @@
 CONFIG += qt
-QT += core-private gui-private opengl qml quick-private
+QT += qml quick
 TEMPLATE = app
 TARGET = qmlogre
 

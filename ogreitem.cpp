@@ -59,7 +59,10 @@ QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     OgreNode *node = static_cast<OgreNode *>(oldNode);
     if (!node)
+    {
         node = new OgreNode();
+        node->setQuickWindow(window());
+    }
 
     node->setSize(QSize(width(), height()));
     node->setAAEnabled(smooth());

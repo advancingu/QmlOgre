@@ -37,11 +37,11 @@
 #ifndef OGRENODE_H
 #define OGRENODE_H
 
+#include "Ogre.h"
 #include <QtQuick/QSGGeometryNode>
-#include <QtQuick/qsgtexturematerial.h>
-#include <private/qsgtexture_p.h>
-
-#include <OgreTexture.h>
+#include <QtQuick/QSGTextureMaterial>
+#include <QtQuick/QSGOpaqueTextureMaterial>
+#include <QtQuick/QQuickWindow>
 
 #define STRINGIFY_(x) #x
 #define STRINGIFY(x) STRINGIFY_(x)
@@ -67,6 +67,8 @@ public:
     void setSize(const QSize &size);
     QSize size() const { return m_size; }
 
+    void setQuickWindow(QQuickWindow *window) { m_quickWindow = window; }
+
     void setAAEnabled(bool enable);
 
     CameraNodeObject *camera() const { return m_cameraObject; }
@@ -87,7 +89,8 @@ private:
     QSGTextureMaterial m_material;
     QSGOpaqueTextureMaterial m_materialO;
     QSGGeometry m_geometry;
-    QSGPlainTexture *m_texture;
+    QSGTexture *m_texture;
+    QQuickWindow *m_quickWindow;
 
     int m_samples;
     bool m_AAEnabled;

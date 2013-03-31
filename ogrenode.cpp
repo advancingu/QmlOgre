@@ -45,7 +45,9 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
-#include <QtOpenGL/QGLFunctions>
+#include <QSurfaceFormat>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
 
 static QString appPath()
 {
@@ -99,7 +101,7 @@ void OgreNode::saveOgreState()
 {
     m_ogreFBO = getOgreFBO();
 
-    const QGLContext *ctx = QGLContext::currentContext();
+    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     ctx->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
     ctx->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -109,7 +111,7 @@ void OgreNode::saveOgreState()
 
 void OgreNode::restoreOgreState()
 {
-    const QGLContext *ctx = QGLContext::currentContext();
+    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
     glPopAttrib();
     ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFBO);
     ctx->functions()->glUseProgram(0);
@@ -128,7 +130,7 @@ GLuint OgreNode::getOgreFBO()
     GLint id;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &id);
 
-    const QGLContext *ctx = QGLContext::currentContext();
+    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
     ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
 
     return id;
@@ -186,10 +188,7 @@ void OgreNode::updateFBO()
     Ogre::GLTexture *nativeTexture = static_cast<Ogre::GLTexture *>(rtt_texture.get());
 
     delete m_texture;
-    m_texture = new QSGPlainTexture;
-    m_texture->setOwnsTexture(false);
-    m_texture->setTextureSize(m_size);
-    m_texture->setTextureId(nativeTexture->getGLID());
+    m_texture = m_quickWindow->createTextureFromId(nativeTexture->getGLID(), m_size);
 
     m_material.setTexture(m_texture);
     m_materialO.setTexture(m_texture);
@@ -217,9 +216,9 @@ void OgreNode::setAAEnabled(bool enable)
 
 void OgreNode::init()
 {
-    const QGLContext *ctx = QGLContext::currentContext();
-    QGLFormat format = ctx->format();
-    m_samples = format.sampleBuffers() ? format.samples() : 0;
+    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
+    QSurfaceFormat format = ctx->format();
+    m_samples = format.samples();
 
     m_root = new Ogre::Root;
     QString glPlugin = QLatin1String(OGRE_PLUGIN_DIR);
@@ -246,7 +245,7 @@ void OgreNode::init()
     m_window->update(false);
 
     // Load resources
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toAscii().data(), "Zip");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toLatin1().data(), "Zip");
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     // Setup scene
