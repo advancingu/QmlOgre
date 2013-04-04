@@ -99,8 +99,6 @@ OgreNode::~OgreNode()
 
 void OgreNode::saveOgreState()
 {
-    m_ogreFBO = getOgreFBO();
-
     const QOpenGLContext *ctx = QOpenGLContext::currentContext();
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     ctx->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -130,9 +128,6 @@ GLuint OgreNode::getOgreFBO()
     GLint id;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &id);
 
-    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
-    ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
-
     return id;
 }
 
@@ -152,6 +147,7 @@ void OgreNode::update()
 
     if (m_dirtyFBO) {
         updateFBO();
+        m_ogreFBO = getOgreFBO();
         m_dirtyFBO = false;
     }
 
