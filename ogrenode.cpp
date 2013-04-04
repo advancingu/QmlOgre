@@ -150,8 +150,10 @@ void OgreNode::update()
     if (!m_initialized)
         init();
 
-    if (m_dirtyFBO)
+    if (m_dirtyFBO) {
         updateFBO();
+        m_dirtyFBO = false;
+    }
 
     saveOgreState();
 }
