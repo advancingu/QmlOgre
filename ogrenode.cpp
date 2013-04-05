@@ -68,6 +68,9 @@ OgreNode::OgreNode()
     , m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
     , m_texture(0)
     , m_samples(0)
+    , m_quickWindow(0)
+    , m_ogreContext(0)
+    , m_qtContext(0)
     , m_AAEnabled(false)
     , m_renderTexture(0)
     , m_ogreFBO(0)
@@ -95,24 +98,34 @@ OgreNode::~OgreNode()
     }
 
     delete m_root;
+
+    delete m_ogreContext;
 }
 
 void OgreNode::saveOgreState()
 {
-    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
     ctx->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
     ctx->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     ctx->functions()->glBindRenderbuffer(GL_RENDERBUFFER, 0);
     ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+
+    ctx->doneCurrent();
+    m_qtContext->makeCurrent(m_quickWindow);
+
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
 }
 
 void OgreNode::restoreOgreState()
 {
-    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
     glPopAttrib();
-    ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFBO);
-    ctx->functions()->glUseProgram(0);
+
+    m_qtContext = QOpenGLContext::currentContext();
+    m_qtContext->functions()->glUseProgram(0);
+    m_qtContext->doneCurrent();
+
+    m_ogreContext->makeCurrent(m_quickWindow);
+    m_ogreContext->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFBO);
 }
 
 GLuint OgreNode::getOgreFBO()
@@ -136,6 +149,17 @@ void OgreNode::preprocess()
     restoreOgreState();
     m_renderTexture->update(true);
     saveOgreState();
+}
+
+void OgreNode::setQuickWindow(QQuickWindow *window)
+{
+    m_quickWindow = window;
+
+    // create a new shared OpenGL context to be used exclusively by Ogre
+    m_ogreContext = new QOpenGLContext();
+    m_ogreContext->setFormat(m_quickWindow->requestedFormat());
+    m_ogreContext->setShareContext(QOpenGLContext::currentContext());
+    m_ogreContext->create();
 }
 
 void OgreNode::update()
