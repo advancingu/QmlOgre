@@ -50,6 +50,37 @@ Rectangle {
         Behavior on opacity { NumberAnimation { } }
     }
 
+    Timer {
+        property int counter: 0
+        id: myTimer
+        interval: 10
+        repeat: true
+        running: true
+        onTriggered: {
+            counter += 1
+            label.text = counter
+        }
+    }
+
+    Rectangle {
+        color: Qt.rgba(1, 1, 1, 1)
+        radius: 10
+        border.width: 1
+        border.color: "white"
+        anchors.fill: label
+        anchors.margins: -10
+    }
+
+    Text {
+        id: label
+        color: "black"
+        wrapMode: Text.WordWrap
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        anchors.margins: 20
+    }
+
 
     OgreItem {
         id: ogreitem
