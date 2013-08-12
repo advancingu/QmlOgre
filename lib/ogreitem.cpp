@@ -61,14 +61,11 @@ QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     if (!node)
     {
         node = new OgreNode();
-        node->setQuickWindow(window());
+        node->setOgreEngineItem(m_ogreEngineItem);
     }
 
     node->setSize(QSize(width(), height()));
-    node->setAAEnabled(smooth());
     node->update();
-
-    m_camera = static_cast<QObject *>(node->camera());
 
     return node;
 }

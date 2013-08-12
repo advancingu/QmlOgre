@@ -38,14 +38,11 @@
 #define OGRENODE_H
 
 #include "Ogre.h"
+#include "ogreengineitem.h"
 #include <QtQuick/QSGGeometryNode>
 #include <QtQuick/QSGTextureMaterial>
 #include <QtQuick/QSGOpaqueTextureMaterial>
 #include <QtQuick/QQuickWindow>
-
-#define STRINGIFY_(x) #x
-#define STRINGIFY(x) STRINGIFY_(x)
-#define OGRE_PLUGIN_DIR STRINGIFY(OGRE_PLUGIN_VAR)
 
 namespace Ogre {
 class Root;
@@ -67,17 +64,14 @@ public:
     void setSize(const QSize &size);
     QSize size() const { return m_size; }
 
-    void setAAEnabled(bool enable);
-
-    CameraNodeObject *camera() const { return m_cameraObject; }
-
     void update();
     void updateFBO();
 
     GLuint getOgreFBO();
 
-    void saveOgreState();
-    void restoreOgreState();
+    void setOgreEngineItem(OgreEngineItem *ogreRootItem);
+    void doneOgreState();
+    void activateOgreState();
 
     void preprocess();
 
@@ -86,16 +80,11 @@ private:
     QSGOpaqueTextureMaterial m_materialO;
     QSGGeometry m_geometry;
     QSGTexture *m_texture;
-    QQuickWindow *m_quickWindow;
-    /** Pointer to QOpenGLContext to be used by Ogre. */
-    QOpenGLContext* m_ogreContext;
-    /** Pointer to QOpenGLContext to be restored after Ogre context. */
-    QOpenGLContext* m_qtContext;
+    OgreEngineItem *m_ogreEngineItem;
 
-    int m_samples;
-    bool m_AAEnabled;
     QSize m_size;
 
+    Ogre::Camera *m_camera;
     Ogre::RenderTexture *m_renderTexture;
     Ogre::Viewport *m_viewport;
     Ogre::TexturePtr rtt_texture;
@@ -103,9 +92,6 @@ private:
 
     GLuint m_ogreFBO;
 
-    CameraNodeObject *m_cameraObject;
-
-    bool m_initialized;
     bool m_dirtyFBO;
 };
 

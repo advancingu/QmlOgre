@@ -37,6 +37,8 @@
 #ifndef OGREITEM_H
 #define OGREITEM_H
 
+#include "ogreengineitem.h"
+
 #include <QtQuick/QQuickItem>
 #include <QtCore/QPropertyAnimation>
 
@@ -62,6 +64,7 @@ private:
     int m_timerID;
 
     QObject *m_camera;
+    OgreEngineItem *m_ogreEngineItem;
 };
 
 #endif // OGREITEM_H

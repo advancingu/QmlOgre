@@ -34,7 +34,7 @@
 **
 **************************************************************************/
 
-#include "ogreitem.h"
+#include "../lib/ogreitem.h"
 #include <QtGui/QGuiApplication>
 #include <QtQuick/QQuickView>
 #include <QtQml/QQmlContext>

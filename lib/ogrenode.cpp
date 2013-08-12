@@ -39,7 +39,6 @@
 #include <RenderSystems/GL/OgreGLFBORenderTexture.h>
 
 #include "ogrenode.h"
-#include "cameranodeobject.h"
 
 #include <Ogre.h>
 
@@ -53,11 +52,6 @@ OgreNode::OgreNode()
     : QSGGeometryNode()
     , m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
     , m_texture(0)
-    , m_samples(0)
-    , m_quickWindow(0)
-    , m_ogreContext(0)
-    , m_qtContext(0)
-    , m_AAEnabled(false)
     , m_renderTexture(0)
     , m_ogreFBO(0)
     , m_dirtyFBO(false)
@@ -75,30 +69,20 @@ OgreNode::~OgreNode()
     }
 }
 
-void OgreNode::saveOgreState()
+void OgreNode::setOgreEngineItem(OgreEngineItem *ogreRootItem)
 {
-    QOpenGLContext *ctx = QOpenGLContext::currentContext();
-    ctx->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
-    ctx->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    ctx->functions()->glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
-
-    ctx->doneCurrent();
-    m_qtContext->makeCurrent(m_quickWindow);
-
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    m_ogreEngineItem = ogreRootItem;
 }
 
-void OgreNode::restoreOgreState()
+void OgreNode::doneOgreState()
 {
-    glPopAttrib();
+    m_ogreEngineItem->doneOgreState();
+}
 
-    m_qtContext = QOpenGLContext::currentContext();
-    m_qtContext->functions()->glUseProgram(0);
-    m_qtContext->doneCurrent();
-
-    m_ogreContext->makeCurrent(m_quickWindow);
-    m_ogreContext->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFBO);
+void OgreNode::activateOgreState()
+{
+    m_ogreEngineItem->activateOgreState();
+    m_ogreEngineItem->ogreContext()->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFBO);
 }
 
 GLuint OgreNode::getOgreFBO()
@@ -119,22 +103,20 @@ GLuint OgreNode::getOgreFBO()
 
 void OgreNode::preprocess()
 {
-    restoreOgreState();
+    activateOgreState();
     m_renderTexture->update(true);
-    saveOgreState();
+    doneOgreState();
 }
 
 void OgreNode::update()
 {
-    restoreOgreState();
-
     if (m_dirtyFBO) {
+        activateOgreState();
         updateFBO();
         m_ogreFBO = getOgreFBO();
         m_dirtyFBO = false;
+        doneOgreState();
     }
-
-    saveOgreState();
 }
 
 void OgreNode::updateFBO()
@@ -142,6 +124,7 @@ void OgreNode::updateFBO()
     if (m_renderTexture)
         Ogre::TextureManager::getSingleton().remove("RttTex");
 
+    int samples = m_ogreEngineItem->ogreContext()->format().samples();
     rtt_texture = Ogre::TextureManager::getSingleton().createManual("RttTex",
                                                                     Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                                                     Ogre::TEX_TYPE_2D,
@@ -150,7 +133,7 @@ void OgreNode::updateFBO()
                                                                     0,
                                                                     Ogre::PF_R8G8B8A8,
                                                                     Ogre::TU_RENDERTARGET, 0, false,
-                                                                    m_AAEnabled ? m_samples : 0);
+                                                                    samples);
 
     m_renderTexture = rtt_texture->getBuffer()->getRenderTarget();
 
@@ -169,7 +152,7 @@ void OgreNode::updateFBO()
     Ogre::GLTexture *nativeTexture = static_cast<Ogre::GLTexture *>(rtt_texture.get());
 
     delete m_texture;
-    m_texture = m_quickWindow->createTextureFromId(nativeTexture->getGLID(), m_size);
+    m_texture = m_ogreEngineItem->createTextureFromId(nativeTexture->getGLID(), m_size);
 
     m_material.setTexture(m_texture);
     m_materialO.setTexture(m_texture);
@@ -183,14 +166,4 @@ void OgreNode::setSize(const QSize &size)
     m_size = size;
     m_dirtyFBO = true;
     markDirty(DirtyGeometry);
-}
-
-void OgreNode::setAAEnabled(bool enable)
-{
-    if (m_AAEnabled == enable)
-        return;
-
-    m_AAEnabled = enable;
-    m_dirtyFBO = true;
-    markDirty(DirtyMaterial);
 }
