@@ -45,12 +45,12 @@
 static const Ogre::Vector3 initialPosition(0, 0, 300);
 
 CameraNodeObject::CameraNodeObject(Ogre::Camera *cam, QObject *parent) :
-    QObject(parent),
-    m_camera(cam),
+    OgreCameraWrapper(parent),
     m_yaw(0),
     m_pitch(0),
     m_zoom(1)
 {
+    m_camera = cam;
     m_node = Ogre::Root::getSingleton().getSceneManager("mySceneManager")->getRootSceneNode()->createChildSceneNode();
     m_node->attachObject(cam);
     cam->move(initialPosition);

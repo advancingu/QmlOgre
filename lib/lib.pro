@@ -73,9 +73,11 @@ MOC_DIR = ./.moc
 
 SOURCES += ogreitem.cpp \
     ogrenode.cpp \
-    ogreengineitem.cpp
+    ogreengineitem.cpp \
+    ogrecamerawrapper.cpp
 
 HEADERS += \
     ogreitem.h \
     ogrenode.h \
-    ogreengineitem.h
+    ogreengineitem.h \
+    ogrecamerawrapper.h

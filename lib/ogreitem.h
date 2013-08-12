@@ -38,22 +38,22 @@
 #define OGREITEM_H
 
 #include "ogreengineitem.h"
+#include "ogrecamerawrapper.h"
 
 #include <QtQuick/QQuickItem>
 #include <QtCore/QPropertyAnimation>
-
-class CameraNodeObject;
 
 class OgreItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QObject *camera READ camera)
+    Q_PROPERTY(QObject *camera READ camera WRITE setCamera)
 
 public:
     OgreItem(QQuickItem *parent = 0);
 
-    QObject *camera() const { return m_camera; }
+    QObject *camera() const { return qobject_cast<QObject *>(m_camera); }
+    void setCamera(QObject *camera);
 
 protected:
     virtual QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *);
@@ -63,7 +63,7 @@ protected:
 private:
     int m_timerID;
 
-    QObject *m_camera;
+    OgreCameraWrapper *m_camera;
     OgreEngineItem *m_ogreEngineItem;
 };
 

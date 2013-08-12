@@ -75,6 +75,8 @@ public:
 
     void preprocess();
 
+    void setCamera(Ogre::Camera *camera) { m_camera = camera; }
+
 private:
     QSGTextureMaterial m_material;
     QSGOpaqueTextureMaterial m_materialO;

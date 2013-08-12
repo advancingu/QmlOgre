@@ -11,7 +11,6 @@
 
 namespace Ogre {
 class Root;
-class Camera;
 class RenderTexture;
 class Viewport;
 class RenderTarget;
@@ -34,7 +33,6 @@ public:
 
 //private:
     Ogre::Root *m_root;
-    Ogre::Camera *m_camera;
     Ogre::RenderWindow *m_ogreWindow;
 
     QQuickWindow *m_quickWindow;

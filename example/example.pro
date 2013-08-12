@@ -3,6 +3,8 @@ QT += qml quick
 TEMPLATE = app
 TARGET = qmlogre
 
+LIBS += -L../lib -lqmlogre
+
 SOURCES += main.cpp \
     cameranodeobject.cpp \
     exampleapp.cpp

@@ -1,7 +1,7 @@
 #include "exampleapp.h"
 
 #include "../lib/ogreitem.h"
-#include "cameranodeobject.h"
+#include "../lib/ogreengineitem.h"
 
 #include <QCoreApplication>
 #include <QtQml/QQmlContext>
@@ -23,11 +23,25 @@ static QString appPath()
 
 ExampleApp::ExampleApp(QWindow *parent) :
     QQuickView(parent)
-    , m_ogreEngineItem(0)
+  , m_cameraObject(0)
+  , m_ogreEngineItem(0)
+  , m_sceneManager(0)
+  , m_camera(0)
 {
     qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
+}
 
+ExampleApp::~ExampleApp()
+{
+    if (m_sceneManager) {
+        m_ogreEngineItem->m_root->destroySceneManager(m_sceneManager);
+    }
+}
+
+void ExampleApp::addContent()
+{
     m_ogreEngineItem = new OgreEngineItem();
+    m_ogreEngineItem->setQuickWindow(this);
 
     // Load resources
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toLatin1().data(), "Zip");
@@ -35,10 +49,10 @@ ExampleApp::ExampleApp(QWindow *parent) :
 
     // Setup scene
     m_sceneManager = m_ogreEngineItem->m_root->createSceneManager(Ogre::ST_GENERIC, "mySceneManager");
-    m_ogreEngineItem->m_camera = m_sceneManager->createCamera("myCamera");
-    m_ogreEngineItem->m_camera->setNearClipDistance(1);
-    m_ogreEngineItem->m_camera->setFarClipDistance(99999);
-//    m_ogreEngineItem->m_camera->setAspectRatio(Ogre::Real(m_size.width()) / Ogre::Real(m_size.height()));
+    m_camera = m_sceneManager->createCamera("myCamera");
+    m_camera->setNearClipDistance(1);
+    m_camera->setFarClipDistance(99999);
+    m_camera->setAspectRatio(Ogre::Real(width()) / Ogre::Real(height()));
 
     // Setup content...
 
@@ -53,7 +67,7 @@ ExampleApp::ExampleApp(QWindow *parent) :
     m_sceneManager->getRootSceneNode()->attachObject(m_sceneManager->createEntity("Head", "ogrehead.mesh"));
 
     // Setup the camera
-    m_cameraObject = new CameraNodeObject(m_ogreEngineItem->m_camera);
+    m_cameraObject = new CameraNodeObject(m_camera);
     m_cameraObject->camera()->setAutoTracking(true, m_sceneManager->getRootSceneNode());
 
 
@@ -61,11 +75,5 @@ ExampleApp::ExampleApp(QWindow *parent) :
     setResizeMode(QQuickView::SizeRootObjectToView);
     setSource(QUrl::fromLocalFile("resources/example.qml"));
     rootContext()->setContextProperty("Window", this);
-}
-
-ExampleApp::~ExampleApp()
-{
-    if (m_sceneManager) {
-        m_ogreEngineItem->m_root->destroySceneManager(m_sceneManager);
-    }
+    rootContext()->setContextProperty("Camera", m_cameraObject);
 }

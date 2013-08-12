@@ -58,6 +58,7 @@ Rectangle {
         anchors.leftMargin: -5
         anchors.top: toolbar1.bottom
         anchors.topMargin: 6
+        camera: Camera
 
 
         Behavior on opacity { NumberAnimation { } }
