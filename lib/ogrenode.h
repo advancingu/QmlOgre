@@ -67,16 +67,12 @@ public:
     void setSize(const QSize &size);
     QSize size() const { return m_size; }
 
-    void setQuickWindow(QQuickWindow *window);
-
     void setAAEnabled(bool enable);
 
     CameraNodeObject *camera() const { return m_cameraObject; }
 
     void update();
     void updateFBO();
-
-    void init();
 
     GLuint getOgreFBO();
 
@@ -100,9 +96,6 @@ private:
     bool m_AAEnabled;
     QSize m_size;
 
-    Ogre::Root *m_root;
-    Ogre::Camera *m_camera;
-    Ogre::SceneManager *m_sceneManager;
     Ogre::RenderTexture *m_renderTexture;
     Ogre::Viewport *m_viewport;
     Ogre::TexturePtr rtt_texture;

@@ -49,20 +49,6 @@
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 
-static QString appPath()
-{
-    QString path = QCoreApplication::applicationDirPath();
-    QDir dir(path);
-#ifdef Q_WS_MAC
-    dir.cdUp();
-    dir.cdUp();
-    dir.cdUp();
-#elif defined(Q_WS_WIN)
-    dir.cdUp();
-#endif
-    return dir.absolutePath();
-}
-
 OgreNode::OgreNode()
     : QSGGeometryNode()
     , m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
@@ -74,7 +60,6 @@ OgreNode::OgreNode()
     , m_AAEnabled(false)
     , m_renderTexture(0)
     , m_ogreFBO(0)
-    , m_initialized(false)
     , m_dirtyFBO(false)
 {
     setMaterial(&m_material);
@@ -88,18 +73,6 @@ OgreNode::~OgreNode()
     if (m_renderTexture) {
         m_renderTexture->removeAllViewports();
     }
-
-    if (m_root) {
-        m_root->detachRenderTarget(m_renderTexture);
-
-        if (m_sceneManager) {
-            m_root->destroySceneManager(m_sceneManager);
-        }
-    }
-
-    delete m_root;
-
-    delete m_ogreContext;
 }
 
 void OgreNode::saveOgreState()
@@ -151,23 +124,9 @@ void OgreNode::preprocess()
     saveOgreState();
 }
 
-void OgreNode::setQuickWindow(QQuickWindow *window)
-{
-    m_quickWindow = window;
-
-    // create a new shared OpenGL context to be used exclusively by Ogre
-    m_ogreContext = new QOpenGLContext();
-    m_ogreContext->setFormat(m_quickWindow->requestedFormat());
-    m_ogreContext->setShareContext(QOpenGLContext::currentContext());
-    m_ogreContext->create();
-}
-
 void OgreNode::update()
 {
     restoreOgreState();
-
-    if (!m_initialized)
-        init();
 
     if (m_dirtyFBO) {
         updateFBO();
@@ -234,64 +193,4 @@ void OgreNode::setAAEnabled(bool enable)
     m_AAEnabled = enable;
     m_dirtyFBO = true;
     markDirty(DirtyMaterial);
-}
-
-void OgreNode::init()
-{
-    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
-    QSurfaceFormat format = ctx->format();
-    m_samples = format.samples();
-
-    m_root = new Ogre::Root;
-    QString glPlugin = QLatin1String(OGRE_PLUGIN_DIR);
-    glPlugin.remove("\"");
-#ifdef DEBUG_PLUGIN
-    glPlugin += QLatin1String("/RenderSystem_GL_d");
-#else
-    glPlugin += QLatin1String("/RenderSystem_GL");
-#endif
-    m_root->loadPlugin(glPlugin.toLatin1().constData());
-
-    Ogre::RenderSystem *renderSystem = m_root->getRenderSystemByName("OpenGL Rendering Subsystem");
-    m_root->setRenderSystem(renderSystem);
-    m_root->initialise(false);
-
-    Ogre::NameValuePairList params;
-
-    params["externalGLControl"] = "true";
-    params["currentGLContext"] = "true";
-
-    //Finally create our window.
-    m_window = m_root->createRenderWindow("OgreWindow", 1, 1, false, &params);
-    m_window->setVisible(false);
-    m_window->update(false);
-
-    // Load resources
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toLatin1().data(), "Zip");
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-    // Setup scene
-    m_sceneManager = m_root->createSceneManager(Ogre::ST_GENERIC, "mySceneManager");
-    m_camera = m_sceneManager->createCamera("myCamera");
-    m_camera->setNearClipDistance(1);
-    m_camera->setFarClipDistance(99999);
-    m_camera->setAspectRatio(Ogre::Real(m_size.width()) / Ogre::Real(m_size.height()));
-
-    // Setup content...
-
-    // Set a sky dome
-    m_sceneManager->setSkyBox(true, "SpaceSkyBox", 10000);
-
-    // setup some basic lighting for our scene
-    m_sceneManager->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
-    m_sceneManager->createLight("myLight")->setPosition(20, 80, 50);
-
-    // create an ogre head entity and place it at the origin
-    m_sceneManager->getRootSceneNode()->attachObject(m_sceneManager->createEntity("Head", "ogrehead.mesh"));
-
-    // Setup the camera
-    m_cameraObject = new CameraNodeObject(m_camera);
-    m_cameraObject->camera()->setAutoTracking(true, m_sceneManager->getRootSceneNode());
-
-    m_initialized = true;
 }

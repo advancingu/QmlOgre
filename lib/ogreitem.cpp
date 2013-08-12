@@ -36,7 +36,7 @@
 
 #include "ogreitem.h"
 #include "ogrenode.h"
-#include "cameranodeobject.h"
+//#include "cameranodeobject.h"
 
 #include <QtCore/QPropertyAnimation>
 
