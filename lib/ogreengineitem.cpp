@@ -37,9 +37,6 @@ OgreEngineItem::~OgreEngineItem()
 //        m_root->detachRenderTarget(m_renderTexture);
         // TODO tell node(s) to detach
 
-        if (m_sceneManager) {
-            m_root->destroySceneManager(m_sceneManager);
-        }
     }
 
     delete m_root;

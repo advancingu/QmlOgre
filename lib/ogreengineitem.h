@@ -12,7 +12,6 @@
 namespace Ogre {
 class Root;
 class Camera;
-class SceneManager;
 class RenderTexture;
 class Viewport;
 class RenderTarget;
@@ -33,10 +32,9 @@ public:
 
     QSGTexture* createTextureFromId(uint id, const QSize &size, QQuickWindow::CreateTextureOptions options = QQuickWindow::CreateTextureOption(0)) const;
 
-private:
+//private:
     Ogre::Root *m_root;
     Ogre::Camera *m_camera;
-    Ogre::SceneManager *m_sceneManager;
     Ogre::RenderWindow *m_ogreWindow;
 
     QQuickWindow *m_quickWindow;

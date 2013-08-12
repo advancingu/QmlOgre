@@ -1,18 +1,24 @@
 #ifndef EXAMPLEAPP_H
 #define EXAMPLEAPP_H
 
-#include <QObject>
+#include "../lib/ogreengineitem.h"
 
-class ExampleApp : public QObject
+#include <QtQuick/QQuickView>
+
+class ExampleApp : public QQuickView
 {
     Q_OBJECT
 public:
-    explicit ExampleApp(QObject *parent = 0);
+    explicit ExampleApp(QWindow *parent = 0);
+    ~ExampleApp();
     
 signals:
     
 public slots:
     
+private:
+    OgreEngineItem *m_ogreEngineItem;
+    Ogre::SceneManager *m_sceneManager;
 };
 
 #endif // EXAMPLEAPP_H

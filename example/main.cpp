@@ -34,23 +34,18 @@
 **
 **************************************************************************/
 
-#include "../lib/ogreitem.h"
+#include "exampleapp.h"
+
 #include <QtGui/QGuiApplication>
-#include <QtQuick/QQuickView>
-#include <QtQml/QQmlContext>
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
+    ExampleApp eApp;
 
-    QQuickView view;
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl::fromLocalFile("resources/example.qml"));
-    view.rootContext()->setContextProperty("Window", &view);
-    view.show();
-    view.raise();
+    eApp.show();
+    eApp.raise();
 
     return app.exec();
 }
