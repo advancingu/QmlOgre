@@ -25,7 +25,8 @@ class OgreEngineItem
 public:
     OgreEngineItem(QQuickWindow *window);
     ~OgreEngineItem();
-    void startEngine();
+    Ogre::Root *startEngine();
+    void stopEngine(Ogre::Root *ogreRoot);
 
 
     void activateOgreState();
@@ -35,8 +36,7 @@ public:
 
     QSGTexture* createTextureFromId(uint id, const QSize &size, QQuickWindow::CreateTextureOptions options = QQuickWindow::CreateTextureOption(0)) const;
 
-//private:
-    Ogre::Root *m_root;
+private:
     Ogre::RenderWindow *m_ogreWindow;
 
     QQuickWindow *m_quickWindow;

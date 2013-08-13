@@ -9,22 +9,14 @@ OgreEngineItem::OgreEngineItem(QQuickWindow *window)
 
 OgreEngineItem::~OgreEngineItem()
 {
-    if (m_root) {
-//        m_root->detachRenderTarget(m_renderTexture);
-        // TODO tell node(s) to detach
-
-    }
-
-    delete m_root;
-
     delete m_ogreContext;
 }
 
-void OgreEngineItem::startEngine()
+Ogre::Root* OgreEngineItem::startEngine()
 {
     activateOgreState();
 
-    m_root = new Ogre::Root;
+    Ogre::Root *ogreRoot = new Ogre::Root;
     QString glPlugin = QLatin1String(OGRE_PLUGIN_DIR);
     glPlugin.remove("\"");
 #ifdef DEBUG_PLUGIN
@@ -32,11 +24,11 @@ void OgreEngineItem::startEngine()
 #else
     glPlugin += QLatin1String("/RenderSystem_GL");
 #endif
-    m_root->loadPlugin(glPlugin.toLatin1().constData());
+    ogreRoot->loadPlugin(glPlugin.toLatin1().constData());
 
-    Ogre::RenderSystem *renderSystem = m_root->getRenderSystemByName("OpenGL Rendering Subsystem");
-    m_root->setRenderSystem(renderSystem);
-    m_root->initialise(false);
+    Ogre::RenderSystem *renderSystem = ogreRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
+    ogreRoot->setRenderSystem(renderSystem);
+    ogreRoot->initialise(false);
 
     Ogre::NameValuePairList params;
 
@@ -44,11 +36,24 @@ void OgreEngineItem::startEngine()
     params["currentGLContext"] = "true";
 
     //Finally create our window.
-    m_ogreWindow = m_root->createRenderWindow("OgreWindow", 1, 1, false, &params);
+    m_ogreWindow = ogreRoot->createRenderWindow("OgreWindow", 1, 1, false, &params);
     m_ogreWindow->setVisible(false);
     m_ogreWindow->update(false);
 
     doneOgreState();
+
+    return ogreRoot;
+}
+
+void OgreEngineItem::stopEngine(Ogre::Root *ogreRoot)
+{
+    if (ogreRoot) {
+//        m_root->detachRenderTarget(m_renderTexture);
+        // TODO tell node(s) to detach
+
+    }
+
+    delete ogreRoot;
 }
 
 void OgreEngineItem::setQuickWindow(QQuickWindow *window)

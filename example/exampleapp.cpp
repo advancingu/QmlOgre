@@ -27,6 +27,7 @@ ExampleApp::ExampleApp(QWindow *parent) :
   , m_ogreEngineItem(0)
   , m_sceneManager(0)
   , m_camera(0)
+  , m_root(0)
 {
     qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
 
@@ -37,7 +38,7 @@ ExampleApp::ExampleApp(QWindow *parent) :
 ExampleApp::~ExampleApp()
 {
     if (m_sceneManager) {
-        m_ogreEngineItem->m_root->destroySceneManager(m_sceneManager);
+        m_root->destroySceneManager(m_sceneManager);
     }
 }
 
@@ -47,14 +48,14 @@ void ExampleApp::addContent()
     disconnect(this, &ExampleApp::beforeRendering, this, &ExampleApp::addContent);
 
     m_ogreEngineItem = new OgreEngineItem(this);
-    m_ogreEngineItem->startEngine();
+    m_root = m_ogreEngineItem->startEngine();
 
     // Load resources
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/../resources/data.zip").toLatin1().data(), "Zip");
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     // Setup scene
-    m_sceneManager = m_ogreEngineItem->m_root->createSceneManager(Ogre::ST_GENERIC, "mySceneManager");
+    m_sceneManager = m_root->createSceneManager(Ogre::ST_GENERIC, "mySceneManager");
     m_camera = m_sceneManager->createCamera("myCamera");
     m_camera->setNearClipDistance(1);
     m_camera->setFarClipDistance(99999);
