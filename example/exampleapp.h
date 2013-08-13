@@ -12,11 +12,11 @@ class ExampleApp : public QQuickView
 public:
     explicit ExampleApp(QWindow *parent = 0);
     ~ExampleApp();
-    void addContent();
     
 signals:
     
 public slots:
+    void addContent();
     
 private:
     CameraNodeObject *m_cameraObject;

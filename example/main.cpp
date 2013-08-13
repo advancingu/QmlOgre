@@ -46,7 +46,6 @@ int main(int argc, char **argv)
 
     eApp.show();
     eApp.raise();
-    eApp.addContent();
 
     return app.exec();
 }

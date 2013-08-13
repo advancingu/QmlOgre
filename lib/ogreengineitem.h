@@ -16,13 +16,17 @@ class Viewport;
 class RenderTarget;
 }
 
+/**
+ * @brief The OgreEngineItem class
+ * Must only be constructed from within Qt QML rendering thread.
+ */
 class OgreEngineItem
 {
 public:
-    OgreEngineItem();
+    OgreEngineItem(QQuickWindow *window);
     ~OgreEngineItem();
+    void startEngine();
 
-    void setQuickWindow(QQuickWindow *window);
 
     void activateOgreState();
     void doneOgreState();
@@ -41,6 +45,9 @@ public:
     QOpenGLContext* m_ogreContext;
     /** Pointer to QOpenGLContext to be restored after Ogre context. */
     QOpenGLContext* m_qtContext;
+
+protected:
+    void setQuickWindow(QQuickWindow *window);
 };
 
 #endif // OGREENGINEITEM_H

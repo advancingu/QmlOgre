@@ -29,6 +29,9 @@ ExampleApp::ExampleApp(QWindow *parent) :
   , m_camera(0)
 {
     qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
+
+    // start Ogre once we are in the rendering thread (Ogre must live in the rendering thread)
+    connect(this, &ExampleApp::beforeRendering, this, &ExampleApp::addContent, Qt::DirectConnection);
 }
 
 ExampleApp::~ExampleApp()
@@ -40,11 +43,14 @@ ExampleApp::~ExampleApp()
 
 void ExampleApp::addContent()
 {
-    m_ogreEngineItem = new OgreEngineItem();
-    m_ogreEngineItem->setQuickWindow(this);
+    // we only want to initialize once
+    disconnect(this, &ExampleApp::beforeRendering, this, &ExampleApp::addContent);
+
+    m_ogreEngineItem = new OgreEngineItem(this);
+    m_ogreEngineItem->startEngine();
 
     // Load resources
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toLatin1().data(), "Zip");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/../resources/data.zip").toLatin1().data(), "Zip");
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     // Setup scene
@@ -73,7 +79,7 @@ void ExampleApp::addContent()
 
     // set up QML scene
     setResizeMode(QQuickView::SizeRootObjectToView);
-    setSource(QUrl::fromLocalFile("resources/example.qml"));
+    setSource(QUrl::fromLocalFile("../resources/example.qml"));
     rootContext()->setContextProperty("Window", this);
     rootContext()->setContextProperty("Camera", m_cameraObject);
 }

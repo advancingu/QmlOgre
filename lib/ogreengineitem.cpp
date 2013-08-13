@@ -2,9 +2,27 @@
 
 #include <QOpenGLFunctions>
 
-OgreEngineItem::OgreEngineItem()
+OgreEngineItem::OgreEngineItem(QQuickWindow *window)
 {
-    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
+    setQuickWindow(window);
+}
+
+OgreEngineItem::~OgreEngineItem()
+{
+    if (m_root) {
+//        m_root->detachRenderTarget(m_renderTexture);
+        // TODO tell node(s) to detach
+
+    }
+
+    delete m_root;
+
+    delete m_ogreContext;
+}
+
+void OgreEngineItem::startEngine()
+{
+    activateOgreState();
 
     m_root = new Ogre::Root;
     QString glPlugin = QLatin1String(OGRE_PLUGIN_DIR);
@@ -29,19 +47,8 @@ OgreEngineItem::OgreEngineItem()
     m_ogreWindow = m_root->createRenderWindow("OgreWindow", 1, 1, false, &params);
     m_ogreWindow->setVisible(false);
     m_ogreWindow->update(false);
-}
 
-OgreEngineItem::~OgreEngineItem()
-{
-    if (m_root) {
-//        m_root->detachRenderTarget(m_renderTexture);
-        // TODO tell node(s) to detach
-
-    }
-
-    delete m_root;
-
-    delete m_ogreContext;
+    doneOgreState();
 }
 
 void OgreEngineItem::setQuickWindow(QQuickWindow *window)
