@@ -46,7 +46,7 @@ Rectangle {
     Image {
         id: back
         anchors.fill: parent
-        source: "GrassandSky.png"
+        source: "qrc:/images/GrassandSky.png"
         Behavior on opacity { NumberAnimation { } }
     }
 
@@ -156,7 +156,7 @@ Rectangle {
             anchors.fill: parent
             smooth: true
             fillMode: "Stretch"
-            source: "move.gif"
+            source: "qrc:/images/move.gif"
         }
 
         MouseArea {
@@ -377,7 +377,7 @@ Rectangle {
             anchors.leftMargin: 0
             fillMode: "PreserveAspectFit"
             smooth: true
-            source: "qt-logo.png"
+            source: "qrc:/images/qt-logo.png"
         }
 
         Item {
@@ -401,7 +401,7 @@ Rectangle {
                 rotation: -90
                 smooth: true
                 anchors.fill: parent
-                source: "arrow.png"
+                source: "qrc:/images/arrow.png"
             }
         }
 
@@ -425,7 +425,7 @@ Rectangle {
                 rotation: 90
                 smooth: true
                 anchors.fill: parent
-                source: "arrow.png"
+                source: "qrc:/images/arrow.png"
             }
         }
 
@@ -448,7 +448,7 @@ Rectangle {
                 rotation: 180
                 smooth: true
                 anchors.fill: parent
-                source: "arrow.png"
+                source: "qrc:/images/arrow.png"
             }
         }
 
@@ -478,7 +478,7 @@ Rectangle {
                 id: image6
                 smooth: true
                 anchors.fill: parent
-                source: "arrow.png"
+                source: "qrc:/images/arrow.png"
             }
         }
 
@@ -491,7 +491,7 @@ Rectangle {
             anchors.verticalCenterOffset: 9
             anchors.centerIn: parent
             smooth: true
-            source: "circle.png"
+            source: "qrc:/images/circle.png"
 
             MouseArea {
                 id: mouse_area5
@@ -518,7 +518,7 @@ Rectangle {
             anchors.horizontalCenterOffset: 14
             anchors.horizontalCenter: rectangle4.horizontalCenter
             smooth: true
-            source: "minus.png"
+            source: "qrc:/images/minus.png"
 
             MouseArea {
                 id: mouse_area6
@@ -543,7 +543,7 @@ Rectangle {
             anchors.bottomMargin: 9
             anchors.horizontalCenter: rectangle3.horizontalCenter
             smooth: true
-            source: "plus.png"
+            source: "qrc:/images/plus.png"
 
             MouseArea {
                 id: mouse_area7
@@ -591,7 +591,7 @@ Rectangle {
             anchors.fill: parent
             smooth: true
             fillMode: "Stretch"
-            source: "move.gif"
+            source: "qrc:/images/move.gif"
         }
 
         MouseArea {

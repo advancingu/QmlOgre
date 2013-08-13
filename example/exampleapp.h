@@ -14,8 +14,10 @@ public:
     ~ExampleApp();
     
 signals:
-    
+    void ogreInitialized();
+
 public slots:
+    void initializeOgre();
     void addContent();
     
 private:

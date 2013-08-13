@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>example.qml</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>arrow.png</file>
+        <file>circle.png</file>
+        <file>GrassandSky.png</file>
+        <file>minus.png</file>
+        <file>plus.png</file>
+        <file>qt-logo.png</file>
+        <file>move.gif</file>
+    </qresource>
+</RCC>
