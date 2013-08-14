@@ -74,14 +74,14 @@ void OgreNode::setOgreEngineItem(OgreEngineItem *ogreRootItem)
     m_ogreEngineItem = ogreRootItem;
 }
 
-void OgreNode::doneOgreState()
+void OgreNode::doneOgreContext()
 {
-    m_ogreEngineItem->doneOgreState();
+    m_ogreEngineItem->doneOgreContext();
 }
 
-void OgreNode::activateOgreState()
+void OgreNode::activateOgreContext()
 {
-    m_ogreEngineItem->activateOgreState();
+    m_ogreEngineItem->activateOgreContext();
     m_ogreEngineItem->ogreContext()->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFBO);
 }
 
@@ -103,19 +103,19 @@ GLuint OgreNode::getOgreFBO()
 
 void OgreNode::preprocess()
 {
-    activateOgreState();
+    activateOgreContext();
     m_renderTexture->update(true);
-    doneOgreState();
+    doneOgreContext();
 }
 
 void OgreNode::update()
 {
     if (m_dirtyFBO) {
-        activateOgreState();
+        activateOgreContext();
         updateFBO();
         m_ogreFBO = getOgreFBO();
         m_dirtyFBO = false;
-        doneOgreState();
+        doneOgreContext();
     }
 }
 

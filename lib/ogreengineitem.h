@@ -32,8 +32,8 @@ public:
     void stopEngine(Ogre::Root *ogreRoot);
 
 
-    void activateOgreState();
-    void doneOgreState();
+    void activateOgreContext();
+    void doneOgreContext();
 
     QOpenGLContext* ogreContext() const;
 

@@ -70,8 +70,8 @@ public:
     GLuint getOgreFBO();
 
     void setOgreEngineItem(OgreEngineItem *ogreRootItem);
-    void doneOgreState();
-    void activateOgreState();
+    void doneOgreContext();
+    void activateOgreContext();
 
     void preprocess();
 

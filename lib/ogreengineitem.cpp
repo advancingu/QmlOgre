@@ -15,7 +15,7 @@ OgreEngineItem::~OgreEngineItem()
 
 Ogre::Root* OgreEngineItem::startEngine()
 {
-    activateOgreState();
+    activateOgreContext();
 
     Ogre::Root *ogreRoot = new Ogre::Root;
     QString glPlugin = QLatin1String(OGRE_PLUGIN_DIR);
@@ -41,7 +41,7 @@ Ogre::Root* OgreEngineItem::startEngine()
     m_ogreWindow->setVisible(false);
     m_ogreWindow->update(false);
 
-    doneOgreState();
+    doneOgreContext();
 
     return ogreRoot;
 }
@@ -62,6 +62,7 @@ void OgreEngineItem::setQuickWindow(QQuickWindow *window)
     Q_ASSERT(window);
 
     m_quickWindow = window;
+    m_qtContext = QOpenGLContext::currentContext();
 
     // create a new shared OpenGL context to be used exclusively by Ogre
     m_ogreContext = new QOpenGLContext();
@@ -70,28 +71,25 @@ void OgreEngineItem::setQuickWindow(QQuickWindow *window)
     m_ogreContext->create();
 }
 
-void OgreEngineItem::activateOgreState()
+void OgreEngineItem::activateOgreContext()
 {
     glPopAttrib();
 
-    m_qtContext = QOpenGLContext::currentContext();
     m_qtContext->functions()->glUseProgram(0);
     m_qtContext->doneCurrent();
 
     m_ogreContext->makeCurrent(m_quickWindow);
 }
 
-void OgreEngineItem::doneOgreState()
+void OgreEngineItem::doneOgreContext()
 {
-    QOpenGLContext *ctx = QOpenGLContext::currentContext();
-    ctx->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
-    ctx->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    ctx->functions()->glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    ctx->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+    m_ogreContext->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
+    m_ogreContext->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    m_ogreContext->functions()->glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    m_ogreContext->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+    m_ogreContext->doneCurrent();
 
-    ctx->doneCurrent();
     m_qtContext->makeCurrent(m_quickWindow);
-
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 }
 
