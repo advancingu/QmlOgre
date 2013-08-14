@@ -67,7 +67,7 @@ void OgreEngineItem::setQuickWindow(QQuickWindow *window)
     // create a new shared OpenGL context to be used exclusively by Ogre
     m_ogreContext = new QOpenGLContext();
     m_ogreContext->setFormat(m_quickWindow->requestedFormat());
-    m_ogreContext->setShareContext(QOpenGLContext::currentContext());
+    m_ogreContext->setShareContext(m_qtContext);
     m_ogreContext->create();
 }
 
