@@ -30,13 +30,13 @@ class RenderTarget;
  * @brief The OgreEngineItem class
  * Must only be constructed from within Qt QML rendering thread.
  */
-class OgreEngineItem : public QObject
+class OgreEngine : public QObject
 {
     Q_OBJECT
 
 public:
-    OgreEngineItem(QQuickWindow *window = 0);
-    ~OgreEngineItem();
+    OgreEngine(QQuickWindow *window = 0);
+    ~OgreEngine();
     Ogre::Root *startEngine();
     void stopEngine(Ogre::Root *ogreRoot);
 

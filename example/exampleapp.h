@@ -10,7 +10,7 @@
 #ifndef EXAMPLEAPP_H
 #define EXAMPLEAPP_H
 
-#include "../lib/ogreengineitem.h"
+#include "../lib/ogreengine.h"
 #include "cameranodeobject.h"
 
 #include <QtQuick/QQuickView>
@@ -31,7 +31,7 @@ public slots:
     
 private:
     CameraNodeObject *m_cameraObject;
-    OgreEngineItem *m_ogreEngineItem;
+    OgreEngine *m_ogreEngine;
 
     Ogre::SceneManager *m_sceneManager;
     Ogre::Camera *m_camera;

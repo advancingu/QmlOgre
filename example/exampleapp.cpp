@@ -10,7 +10,7 @@
 #include "exampleapp.h"
 
 #include "../lib/ogreitem.h"
-#include "../lib/ogreengineitem.h"
+#include "../lib/ogreengine.h"
 
 #include <QCoreApplication>
 #include <QtQml/QQmlContext>
@@ -33,13 +33,13 @@ static QString appPath()
 ExampleApp::ExampleApp(QWindow *parent) :
     QQuickView(parent)
   , m_cameraObject(0)
-  , m_ogreEngineItem(0)
+  , m_ogreEngine(0)
   , m_sceneManager(0)
   , m_camera(0)
   , m_root(0)
 {
     qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
-    qmlRegisterType<OgreEngineItem>("OgreEngine", 1, 0, "OgreEngineItem");
+    qmlRegisterType<OgreEngine>("OgreEngine", 1, 0, "OgreEngine");
 
     // start Ogre once we are in the rendering thread (Ogre must live in the rendering thread)
     connect(this, &ExampleApp::beforeRendering, this, &ExampleApp::initializeOgre, Qt::DirectConnection);
@@ -58,10 +58,10 @@ void ExampleApp::initializeOgre()
     // we only want to initialize once
     disconnect(this, &ExampleApp::beforeRendering, this, &ExampleApp::initializeOgre);
 
-    m_ogreEngineItem = new OgreEngineItem(this);
-    m_root = m_ogreEngineItem->startEngine();
+    m_ogreEngine = new OgreEngine(this);
+    m_root = m_ogreEngine->startEngine();
 
-    m_ogreEngineItem->activateOgreContext();
+    m_ogreEngine->activateOgreContext();
 
     // Load resources
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toLatin1().data(), "Zip");
@@ -90,7 +90,7 @@ void ExampleApp::initializeOgre()
     m_cameraObject = new CameraNodeObject(m_camera);
     m_cameraObject->camera()->setAutoTracking(true, m_sceneManager->getRootSceneNode());
 
-    m_ogreEngineItem->doneOgreContext();
+    m_ogreEngine->doneOgreContext();
 
     emit(ogreInitialized());
 }
@@ -100,7 +100,7 @@ void ExampleApp::addContent()
     // set up QML globals
     rootContext()->setContextProperty("Window", this);
     rootContext()->setContextProperty("Camera", m_cameraObject);
-    rootContext()->setContextProperty("OgreEngine", m_ogreEngineItem);
+    rootContext()->setContextProperty("OgreEngine", m_ogreEngine);
 
     // set up QML scene
     setResizeMode(QQuickView::SizeRootObjectToView);

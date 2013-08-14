@@ -46,7 +46,7 @@ OgreNode::~OgreNode()
     }
 }
 
-void OgreNode::setOgreEngineItem(OgreEngineItem *ogreRootItem)
+void OgreNode::setOgreEngineItem(OgreEngine *ogreRootItem)
 {
     m_ogreEngineItem = ogreRootItem;
 }

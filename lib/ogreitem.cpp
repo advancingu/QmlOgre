@@ -55,7 +55,7 @@ void OgreItem::setCamera(QObject *camera)
     m_camera = qobject_cast<OgreCameraWrapper*>(camera);
 }
 
-void OgreItem::setOgreEngine(OgreEngineItem *ogreEngine)
+void OgreItem::setOgreEngine(OgreEngine *ogreEngine)
 {
     m_ogreEngineItem = ogreEngine;
 }

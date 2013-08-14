@@ -10,7 +10,7 @@
 #ifndef OGREITEM_H
 #define OGREITEM_H
 
-#include "ogreengineitem.h"
+#include "ogreengine.h"
 #include "ogrecamerawrapper.h"
 
 #include <QtQuick/QQuickItem>
@@ -21,7 +21,7 @@ class OgreItem : public QQuickItem
     Q_OBJECT
 
     Q_PROPERTY(QObject *camera READ camera WRITE setCamera)
-    Q_PROPERTY(OgreEngineItem *ogreEngine READ ogreEngine WRITE setOgreEngine)
+    Q_PROPERTY(OgreEngine *ogreEngine READ ogreEngine WRITE setOgreEngine)
 
 public:
     OgreItem(QQuickItem *parent = 0);
@@ -29,8 +29,8 @@ public:
     QObject *camera() const { return qobject_cast<QObject *>(m_camera); }
     void setCamera(QObject *camera);
 
-    OgreEngineItem *ogreEngine() const { return m_ogreEngineItem; }
-    void setOgreEngine(OgreEngineItem *ogreEngine);
+    OgreEngine *ogreEngine() const { return m_ogreEngineItem; }
+    void setOgreEngine(OgreEngine *ogreEngine);
 
 protected:
     virtual QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *);
@@ -41,7 +41,7 @@ private:
     int m_timerID;
 
     OgreCameraWrapper *m_camera;
-    OgreEngineItem *m_ogreEngineItem;
+    OgreEngine *m_ogreEngineItem;
 };
 
 #endif // OGREITEM_H

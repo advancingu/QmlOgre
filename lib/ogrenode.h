@@ -11,7 +11,7 @@
 #define OGRENODE_H
 
 #include "Ogre.h"
-#include "ogreengineitem.h"
+#include "ogreengine.h"
 #include <QtQuick/QSGGeometryNode>
 #include <QtQuick/QSGTextureMaterial>
 #include <QtQuick/QSGOpaqueTextureMaterial>
@@ -42,7 +42,7 @@ public:
 
     GLuint getOgreFBO();
 
-    void setOgreEngineItem(OgreEngineItem *ogreRootItem);
+    void setOgreEngineItem(OgreEngine *ogreRootItem);
     void doneOgreContext();
     void activateOgreContext();
 
@@ -55,7 +55,7 @@ private:
     QSGOpaqueTextureMaterial m_materialO;
     QSGGeometry m_geometry;
     QSGTexture *m_texture;
-    OgreEngineItem *m_ogreEngineItem;
+    OgreEngine *m_ogreEngineItem;
 
     QSize m_size;
 

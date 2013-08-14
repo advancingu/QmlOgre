@@ -7,22 +7,22 @@
  * with this source code in the file LICENSE.}
  */
 
-#include "ogreengineitem.h"
+#include "ogreengine.h"
 
 #include <QOpenGLFunctions>
 
-OgreEngineItem::OgreEngineItem(QQuickWindow *window)
+OgreEngine::OgreEngine(QQuickWindow *window)
     : QObject()
 {
     setQuickWindow(window);
 }
 
-OgreEngineItem::~OgreEngineItem()
+OgreEngine::~OgreEngine()
 {
     delete m_ogreContext;
 }
 
-Ogre::Root* OgreEngineItem::startEngine()
+Ogre::Root* OgreEngine::startEngine()
 {
     activateOgreContext();
 
@@ -55,7 +55,7 @@ Ogre::Root* OgreEngineItem::startEngine()
     return ogreRoot;
 }
 
-void OgreEngineItem::stopEngine(Ogre::Root *ogreRoot)
+void OgreEngine::stopEngine(Ogre::Root *ogreRoot)
 {
     if (ogreRoot) {
 //        m_root->detachRenderTarget(m_renderTexture);
@@ -66,7 +66,7 @@ void OgreEngineItem::stopEngine(Ogre::Root *ogreRoot)
     delete ogreRoot;
 }
 
-void OgreEngineItem::setQuickWindow(QQuickWindow *window)
+void OgreEngine::setQuickWindow(QQuickWindow *window)
 {
     Q_ASSERT(window);
 
@@ -80,7 +80,7 @@ void OgreEngineItem::setQuickWindow(QQuickWindow *window)
     m_ogreContext->create();
 }
 
-void OgreEngineItem::activateOgreContext()
+void OgreEngine::activateOgreContext()
 {
     glPopAttrib();
 
@@ -90,7 +90,7 @@ void OgreEngineItem::activateOgreContext()
     m_ogreContext->makeCurrent(m_quickWindow);
 }
 
-void OgreEngineItem::doneOgreContext()
+void OgreEngine::doneOgreContext()
 {
     m_ogreContext->functions()->glBindBuffer(GL_ARRAY_BUFFER, 0);
     m_ogreContext->functions()->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -102,12 +102,12 @@ void OgreEngineItem::doneOgreContext()
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 }
 
-QOpenGLContext* OgreEngineItem::ogreContext() const
+QOpenGLContext* OgreEngine::ogreContext() const
 {
     return m_ogreContext;
 }
 
-QSGTexture* OgreEngineItem::createTextureFromId(uint id, const QSize &size, QQuickWindow::CreateTextureOptions options) const
+QSGTexture* OgreEngine::createTextureFromId(uint id, const QSize &size, QQuickWindow::CreateTextureOptions options) const
 {
     return m_quickWindow->createTextureFromId(id, size, options);
 }
