@@ -36,9 +36,6 @@
 
 #include "ogreitem.h"
 #include "ogrenode.h"
-//#include "cameranodeobject.h"
-
-#include <QtCore/QPropertyAnimation>
 
 OgreItem::OgreItem(QQuickItem *parent)
     : QQuickItem(parent)
@@ -69,6 +66,8 @@ QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     node->setSize(QSize(width(), height()));
     node->update();
+    // mark texture dirty, otherwise Qt will not trigger a redraw (preprocess())
+    node->markDirty(QSGNode::DirtyMaterial);
 
     return node;
 }
@@ -81,7 +80,6 @@ void OgreItem::timerEvent(QTimerEvent *)
 void OgreItem::setCamera(QObject *camera)
 {
     m_camera = qobject_cast<OgreCameraWrapper*>(camera);
-    // todo trigger node update
 }
 
 void OgreItem::setOgreEngine(OgreEngineItem *ogreEngine)
