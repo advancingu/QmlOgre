@@ -38,9 +38,6 @@ ExampleApp::ExampleApp(QWindow *parent) :
   , m_camera(0)
   , m_root(0)
 {
-    qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
-    qmlRegisterType<OgreEngine>("OgreEngine", 1, 0, "OgreEngine");
-
     // start Ogre once we are in the rendering thread (Ogre must live in the rendering thread)
     connect(this, &ExampleApp::beforeRendering, this, &ExampleApp::initializeOgre, Qt::DirectConnection);
     connect(this, &ExampleApp::ogreInitialized, this, &ExampleApp::addContent);

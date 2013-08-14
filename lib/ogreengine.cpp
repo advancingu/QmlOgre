@@ -8,12 +8,16 @@
  */
 
 #include "ogreengine.h"
+#include "ogreitem.h"
 
 #include <QOpenGLFunctions>
 
 OgreEngine::OgreEngine(QQuickWindow *window)
     : QObject()
 {
+    qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
+    qmlRegisterType<OgreEngine>("OgreEngine", 1, 0, "OgreEngine");
+
     setQuickWindow(window);
 }
 
