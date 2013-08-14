@@ -68,14 +68,14 @@ void ExampleApp::initializeOgre()
     // Setup content...
 
     // Set a sky dome
-//    m_sceneManager->setSkyBox(true, "SpaceSkyBox", 10000);
+    m_sceneManager->setSkyBox(true, "SpaceSkyBox", 10000);
 
     // setup some basic lighting for our scene
     m_sceneManager->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
     m_sceneManager->createLight("myLight")->setPosition(20, 80, 50);
 
     // create an ogre head entity and place it at the origin
-//    m_sceneManager->getRootSceneNode()->attachObject(m_sceneManager->createEntity("Head", "ogrehead.mesh"));
+    m_sceneManager->getRootSceneNode()->attachObject(m_sceneManager->createEntity("Head", "ogrehead.mesh"));
 
     // Setup the camera
     m_cameraObject = new CameraNodeObject(m_camera);
