@@ -52,6 +52,8 @@ void ExampleApp::initializeOgre()
     m_ogreEngineItem = new OgreEngineItem(this);
     m_root = m_ogreEngineItem->startEngine();
 
+    m_ogreEngineItem->activateOgreContext();
+
     // Load resources
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toLatin1().data(), "Zip");
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -78,6 +80,8 @@ void ExampleApp::initializeOgre()
     // Setup the camera
     m_cameraObject = new CameraNodeObject(m_camera);
     m_cameraObject->camera()->setAutoTracking(true, m_sceneManager->getRootSceneNode());
+
+    m_ogreEngineItem->doneOgreContext();
 
     emit(ogreInitialized());
 }
