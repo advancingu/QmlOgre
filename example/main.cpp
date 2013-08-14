@@ -17,6 +17,7 @@ int main(int argc, char **argv)
 
     ExampleApp eApp;
 
+    eApp.resize(900, 700);
     eApp.show();
     eApp.raise();
 
