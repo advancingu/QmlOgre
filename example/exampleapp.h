@@ -34,7 +34,6 @@ private:
     OgreEngine *m_ogreEngine;
 
     Ogre::SceneManager *m_sceneManager;
-    Ogre::Camera *m_camera;
     Ogre::Root *m_root;
 };
 
