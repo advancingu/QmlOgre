@@ -18,4 +18,4 @@ The code is split into the ```lib``` library code and ```example``` application 
 
 License
 -------
-QmlOgre is licensed under the BSD license. See LICENSE for details.
+QmlOgre is licensed under the BSD license. See ```LICENSE``` for details.
