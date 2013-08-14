@@ -30,6 +30,7 @@ ExampleApp::ExampleApp(QWindow *parent) :
   , m_root(0)
 {
     qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
+    qmlRegisterType<OgreEngineItem>("OgreEngine", 1, 0, "OgreEngineItem");
 
     // start Ogre once we are in the rendering thread (Ogre must live in the rendering thread)
     connect(this, &ExampleApp::beforeRendering, this, &ExampleApp::initializeOgre, Qt::DirectConnection);
@@ -83,9 +84,12 @@ void ExampleApp::initializeOgre()
 
 void ExampleApp::addContent()
 {
+    // set up QML globals
+    rootContext()->setContextProperty("Window", this);
+    rootContext()->setContextProperty("Camera", m_cameraObject);
+    rootContext()->setContextProperty("OgreEngine", m_ogreEngineItem);
+
     // set up QML scene
     setResizeMode(QQuickView::SizeRootObjectToView);
     setSource(QUrl("qrc:/qml/example.qml"));
-    rootContext()->setContextProperty("Window", this);
-    rootContext()->setContextProperty("Camera", m_cameraObject);
 }

@@ -48,12 +48,16 @@ class OgreItem : public QQuickItem
     Q_OBJECT
 
     Q_PROPERTY(QObject *camera READ camera WRITE setCamera)
+    Q_PROPERTY(OgreEngineItem *ogreEngine READ ogreEngine WRITE setOgreEngine)
 
 public:
     OgreItem(QQuickItem *parent = 0);
 
     QObject *camera() const { return qobject_cast<QObject *>(m_camera); }
     void setCamera(QObject *camera);
+
+    OgreEngineItem *ogreEngine() const { return m_ogreEngineItem; }
+    void setOgreEngine(OgreEngineItem *ogreEngine);
 
 protected:
     virtual QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *);

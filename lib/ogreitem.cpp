@@ -44,6 +44,7 @@ OgreItem::OgreItem(QQuickItem *parent)
     : QQuickItem(parent)
     , m_timerID(0)
     , m_camera(0)
+    , m_ogreEngineItem(0)
 {
     setFlag(ItemHasContents);
     setSmooth(false);
@@ -53,7 +54,7 @@ OgreItem::OgreItem(QQuickItem *parent)
 
 QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 {
-    if (width() <= 0 || height() <= 0 || !m_camera) {
+    if (width() <= 0 || height() <= 0 || !m_camera || !m_ogreEngineItem) {
         delete oldNode;
         return 0;
     }
@@ -81,4 +82,9 @@ void OgreItem::setCamera(QObject *camera)
 {
     m_camera = qobject_cast<OgreCameraWrapper*>(camera);
     // todo trigger node update
+}
+
+void OgreItem::setOgreEngine(OgreEngineItem *ogreEngine)
+{
+    m_ogreEngineItem = ogreEngine;
 }

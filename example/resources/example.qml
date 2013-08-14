@@ -59,7 +59,7 @@ Rectangle {
         anchors.top: toolbar1.bottom
         anchors.topMargin: 6
         camera: Camera
-
+        ogreEngine: OgreEngine
 
         Behavior on opacity { NumberAnimation { } }
         Behavior on width { NumberAnimation { } }

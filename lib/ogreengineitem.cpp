@@ -3,6 +3,7 @@
 #include <QOpenGLFunctions>
 
 OgreEngineItem::OgreEngineItem(QQuickWindow *window)
+    : QObject()
 {
     setQuickWindow(window);
 }
@@ -58,6 +59,8 @@ void OgreEngineItem::stopEngine(Ogre::Root *ogreRoot)
 
 void OgreEngineItem::setQuickWindow(QQuickWindow *window)
 {
+    Q_ASSERT(window);
+
     m_quickWindow = window;
 
     // create a new shared OpenGL context to be used exclusively by Ogre

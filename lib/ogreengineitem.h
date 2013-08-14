@@ -1,6 +1,7 @@
 #ifndef OGREENGINEITEM_H
 #define OGREENGINEITEM_H
 
+#include <QObject>
 #include <QQuickWindow>
 #include <QOpenGLContext>
 #include <Ogre.h>
@@ -20,10 +21,12 @@ class RenderTarget;
  * @brief The OgreEngineItem class
  * Must only be constructed from within Qt QML rendering thread.
  */
-class OgreEngineItem
+class OgreEngineItem : public QObject
 {
+    Q_OBJECT
+
 public:
-    OgreEngineItem(QQuickWindow *window);
+    OgreEngineItem(QQuickWindow *window = 0);
     ~OgreEngineItem();
     Ogre::Root *startEngine();
     void stopEngine(Ogre::Root *ogreRoot);
