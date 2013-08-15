@@ -53,6 +53,14 @@ void OgreNode::setOgreEngineItem(OgreEngine *ogreRootItem)
 
 void OgreNode::doneOgreContext()
 {
+    if (m_ogreFboId != 0)
+    {
+        Ogre::GLFrameBufferObject *ogreFbo = NULL;
+        m_renderTexture->getCustomAttribute("FBO", &ogreFbo);
+        Ogre::GLFBOManager *manager = ogreFbo->getManager();
+        manager->unbind(m_renderTexture);
+    }
+
     m_ogreEngineItem->doneOgreContext();
 }
 
