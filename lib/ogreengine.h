@@ -58,6 +58,8 @@ private:
     /** Pointer to QOpenGLContext to be restored after Ogre context. */
     QOpenGLContext* m_qtContext;
 
+    void loadOgrePlugin(Ogre::Root *ogreRoot, const QString &name);
+
 protected:
     void setQuickWindow(QQuickWindow *window);
 };

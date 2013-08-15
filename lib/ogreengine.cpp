@@ -31,14 +31,7 @@ Ogre::Root* OgreEngine::startEngine()
     activateOgreContext();
 
     Ogre::Root *ogreRoot = new Ogre::Root;
-    QString glPlugin = QLatin1String(OGRE_PLUGIN_DIR);
-    glPlugin.remove("\"");
-#ifdef DEBUG_PLUGIN
-    glPlugin += QLatin1String("/RenderSystem_GL_d");
-#else
-    glPlugin += QLatin1String("/RenderSystem_GL");
-#endif
-    ogreRoot->loadPlugin(glPlugin.toLatin1().constData());
+    loadOgrePlugin(ogreRoot, "RenderSystem_GL");
 
     Ogre::RenderSystem *renderSystem = ogreRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
     ogreRoot->setRenderSystem(renderSystem);
@@ -114,4 +107,19 @@ QOpenGLContext* OgreEngine::ogreContext() const
 QSGTexture* OgreEngine::createTextureFromId(uint id, const QSize &size, QQuickWindow::CreateTextureOptions options) const
 {
     return m_quickWindow->createTextureFromId(id, size, options);
+}
+
+void OgreEngine::loadOgrePlugin(Ogre::Root* ogreRoot, const QString &name)
+{
+    QString pluginDir = QLatin1String(OGRE_PLUGIN_DIR);
+    pluginDir.remove("\"");
+    pluginDir += "/";
+
+    QString pluginPath;
+#ifdef DEBUG_PLUGIN
+    glPlugin += pluginDir + name + QString("_d");
+#else
+    pluginPath += pluginDir + name;
+#endif
+    ogreRoot->loadPlugin(pluginPath.toLatin1().constData());
 }
