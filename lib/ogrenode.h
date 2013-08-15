@@ -40,7 +40,7 @@ public:
     void update();
     void updateFBO();
 
-    GLuint getOgreFBO();
+    GLuint getOgreFboId();
 
     void setOgreEngineItem(OgreEngine *ogreRootItem);
     void doneOgreContext();
@@ -65,7 +65,7 @@ private:
     Ogre::TexturePtr rtt_texture;
     Ogre::RenderWindow *m_window;
 
-    GLuint m_ogreFBO;
+    GLuint m_ogreFboId;
 
     bool m_dirtyFBO;
 };

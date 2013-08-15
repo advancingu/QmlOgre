@@ -30,7 +30,7 @@ OgreNode::OgreNode()
     , m_renderTexture(0)
     , m_viewport(0)
     , m_window(0)
-    , m_ogreFBO(0)
+    , m_ogreFboId(0)
     , m_dirtyFBO(false)
 {
     setMaterial(&m_material);
@@ -59,10 +59,10 @@ void OgreNode::doneOgreContext()
 void OgreNode::activateOgreContext()
 {
     m_ogreEngineItem->activateOgreContext();
-    m_ogreEngineItem->ogreContext()->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFBO);
+    m_ogreEngineItem->ogreContext()->functions()->glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_ogreFboId);
 }
 
-GLuint OgreNode::getOgreFBO()
+GLuint OgreNode::getOgreFboId()
 {
     if (!m_renderTexture)
         return 0;
@@ -90,7 +90,7 @@ void OgreNode::update()
     if (m_dirtyFBO) {
         activateOgreContext();
         updateFBO();
-        m_ogreFBO = getOgreFBO();
+        m_ogreFboId = getOgreFboId();
         m_dirtyFBO = false;
         doneOgreContext();
     }
