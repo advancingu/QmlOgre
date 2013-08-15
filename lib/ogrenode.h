@@ -62,7 +62,7 @@ private:
     Ogre::Camera *m_camera;
     Ogre::RenderTexture *m_renderTexture;
     Ogre::Viewport *m_viewport;
-    Ogre::TexturePtr rtt_texture;
+    Ogre::TexturePtr m_rttTexture;
     Ogre::RenderWindow *m_window;
 
     GLuint m_ogreFboId;

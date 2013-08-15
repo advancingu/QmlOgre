@@ -102,7 +102,7 @@ void OgreNode::updateFBO()
         Ogre::TextureManager::getSingleton().remove("RttTex");
 
     int samples = m_ogreEngineItem->ogreContext()->format().samples();
-    rtt_texture = Ogre::TextureManager::getSingleton().createManual("RttTex",
+    m_rttTexture = Ogre::TextureManager::getSingleton().createManual("RttTex",
                                                                     Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                                                     Ogre::TEX_TYPE_2D,
                                                                     m_size.width(),
@@ -112,7 +112,7 @@ void OgreNode::updateFBO()
                                                                     Ogre::TU_RENDERTARGET, 0, false,
                                                                     samples);
 
-    m_renderTexture = rtt_texture->getBuffer()->getRenderTarget();
+    m_renderTexture = m_rttTexture->getBuffer()->getRenderTarget();
 
     m_renderTexture->addViewport(m_camera);
     m_renderTexture->getViewport(0)->setClearEveryFrame(true);
@@ -126,7 +126,7 @@ void OgreNode::updateFBO()
                                             QRectF(0, 0, m_size.width(), m_size.height()),
                                             QRectF(0, 0, 1, 1));
 
-    Ogre::GLTexture *nativeTexture = static_cast<Ogre::GLTexture *>(rtt_texture.get());
+    Ogre::GLTexture *nativeTexture = static_cast<Ogre::GLTexture *>(m_rttTexture.get());
 
     delete m_texture;
     m_texture = m_ogreEngineItem->createTextureFromId(nativeTexture->getGLID(), m_size);
