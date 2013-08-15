@@ -44,6 +44,10 @@ OgreNode::~OgreNode()
     if (m_renderTarget) {
         m_renderTarget->removeAllViewports();
     }
+
+    if (Ogre::Root::getSingletonPtr()) {
+        Ogre::Root::getSingletonPtr()->detachRenderTarget(m_renderTarget);
+    }
 }
 
 void OgreNode::setOgreEngineItem(OgreEngine *ogreRootItem)
