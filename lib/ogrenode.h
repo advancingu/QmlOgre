@@ -60,7 +60,7 @@ private:
     QSize m_size;
 
     Ogre::Camera *m_camera;
-    Ogre::RenderTexture *m_renderTexture;
+    Ogre::RenderTexture *m_renderTarget;
     Ogre::Viewport *m_viewport;
     Ogre::TexturePtr m_rttTexture;
     Ogre::RenderWindow *m_window;

@@ -27,7 +27,7 @@ OgreNode::OgreNode()
     , m_texture(0)
     , m_ogreEngineItem(0)
     , m_camera(0)
-    , m_renderTexture(0)
+    , m_renderTarget(0)
     , m_viewport(0)
     , m_window(0)
     , m_ogreFboId(0)
@@ -41,8 +41,8 @@ OgreNode::OgreNode()
 
 OgreNode::~OgreNode()
 {
-    if (m_renderTexture) {
-        m_renderTexture->removeAllViewports();
+    if (m_renderTarget) {
+        m_renderTarget->removeAllViewports();
     }
 }
 
@@ -56,9 +56,9 @@ void OgreNode::doneOgreContext()
     if (m_ogreFboId != 0)
     {
         Ogre::GLFrameBufferObject *ogreFbo = NULL;
-        m_renderTexture->getCustomAttribute("FBO", &ogreFbo);
+        m_renderTarget->getCustomAttribute("FBO", &ogreFbo);
         Ogre::GLFBOManager *manager = ogreFbo->getManager();
-        manager->unbind(m_renderTexture);
+        manager->unbind(m_renderTarget);
     }
 
     m_ogreEngineItem->doneOgreContext();
@@ -72,13 +72,13 @@ void OgreNode::activateOgreContext()
 
 GLuint OgreNode::getOgreFboId()
 {
-    if (!m_renderTexture)
+    if (!m_renderTarget)
         return 0;
 
     Ogre::GLFrameBufferObject *ogreFbo = 0;
-    m_renderTexture->getCustomAttribute("FBO", &ogreFbo);
+    m_renderTarget->getCustomAttribute("FBO", &ogreFbo);
     Ogre::GLFBOManager *manager = ogreFbo->getManager();
-    manager->bind(m_renderTexture);
+    manager->bind(m_renderTarget);
 
     GLint id;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &id);
@@ -89,7 +89,7 @@ GLuint OgreNode::getOgreFboId()
 void OgreNode::preprocess()
 {
     activateOgreContext();
-    m_renderTexture->update(true);
+    m_renderTarget->update(true);
     doneOgreContext();
 }
 
@@ -106,7 +106,7 @@ void OgreNode::update()
 
 void OgreNode::updateFBO()
 {
-    if (m_renderTexture)
+    if (m_renderTarget)
         Ogre::TextureManager::getSingleton().remove("RttTex");
 
     int samples = m_ogreEngineItem->ogreContext()->format().samples();
@@ -120,12 +120,12 @@ void OgreNode::updateFBO()
                                                                     Ogre::TU_RENDERTARGET, 0, false,
                                                                     samples);
 
-    m_renderTexture = m_rttTexture->getBuffer()->getRenderTarget();
+    m_renderTarget = m_rttTexture->getBuffer()->getRenderTarget();
 
-    m_renderTexture->addViewport(m_camera);
-    m_renderTexture->getViewport(0)->setClearEveryFrame(true);
-    m_renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
-    m_renderTexture->getViewport(0)->setOverlaysEnabled(false);
+    m_renderTarget->addViewport(m_camera);
+    m_renderTarget->getViewport(0)->setClearEveryFrame(true);
+    m_renderTarget->getViewport(0)->setBackgroundColour(Ogre::ColourValue::Black);
+    m_renderTarget->getViewport(0)->setOverlaysEnabled(false);
 
     Ogre::Real aspectRatio = Ogre::Real(m_size.width()) / Ogre::Real(m_size.height());
     m_camera->setAspectRatio(aspectRatio);
