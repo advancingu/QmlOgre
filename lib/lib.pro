@@ -81,3 +81,8 @@ HEADERS += \
     ogrenode.h \
     ogrecamerawrapper.h \
     ogreengine.h
+
+# Copy all headers to build folder
+Headers.path = $$OUT_PWD/include
+Headers.files = $$files(*.h)
+INSTALLS += Headers
