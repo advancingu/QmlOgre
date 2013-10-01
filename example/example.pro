@@ -5,6 +5,10 @@ TARGET = qmlogre
 
 LIBS += -L../lib -lqmlogre
 
+UI_DIR = ./.ui
+OBJECTS_DIR = ./.obj
+MOC_DIR = ./.moc
+
 SOURCES += main.cpp \
     cameranodeobject.cpp \
     exampleapp.cpp
@@ -35,13 +39,6 @@ macx {
 } else:unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += OGRE
-    OGRELIBDIR = $$system(pkg-config --libs-only-L OGRE)
-    isEmpty(OGRELIBDIR) {
-        OGRELIBDIR = /usr/lib
-    } else {
-        OGRELIBDIR = $$replace(OGRELIBDIR, -L,)
-    }
-    OGREPLUGINDIR = $$OGRELIBDIR/OGRE
 } else:win32 {
     OGREDIR = $$(OGRE_HOME)
     isEmpty(OGREDIR) {
@@ -68,5 +65,15 @@ macx {
     }
 }
 
-RESOURCES += \
-    resources/resources.qrc
+RESOURCES += resources/resources.qrc
+
+# Copy all resources to build folder
+Resources.path = $$OUT_PWD/resources
+Resources.files = resources/*.zip
+
+# Copy all config files to build folder
+Config.path = $$OUT_PWD
+Config.files = config/*
+
+# make install
+INSTALLS += Resources Config

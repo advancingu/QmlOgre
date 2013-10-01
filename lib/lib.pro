@@ -23,13 +23,6 @@ macx {
 } else:unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += OGRE
-    OGRELIBDIR = $$system(pkg-config --libs-only-L OGRE)
-    isEmpty(OGRELIBDIR) {
-        OGRELIBDIR = /usr/lib/x86_64-linux-gnu
-    } else {
-        OGRELIBDIR = $$replace(OGRELIBDIR, -L,)
-    }
-    OGREPLUGINDIR = $$OGRELIBDIR/OGRE
 } else:win32 {
     OGREDIR = $$(OGRE_HOME)
     isEmpty(OGREDIR) {
