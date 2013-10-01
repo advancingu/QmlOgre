@@ -61,8 +61,7 @@ void ExampleApp::initializeOgre()
     //
     // add sample Ogre data
     //
-
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(QString(appPath() + "/resources/data.zip").toLatin1().data(), "Zip");
+    m_ogreEngine->setupResources();
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     m_sceneManager = m_root->createSceneManager(Ogre::ST_GENERIC, "mySceneManager");

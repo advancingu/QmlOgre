@@ -27,7 +27,7 @@ macx {
     PKGCONFIG += OGRE
     OGRELIBDIR = $$system(pkg-config --libs-only-L OGRE)
     isEmpty(OGRELIBDIR) {
-        OGRELIBDIR = /usr/lib
+        OGRELIBDIR = /usr/lib/x86_64-linux-gnu
     } else {
         OGRELIBDIR = $$replace(OGRELIBDIR, -L,)
     }
