@@ -19,20 +19,10 @@ macx {
             INCLUDEPATH += $$BOOSTDIR
 #            LIBS += -L$$BOOSTDIR/lib -lboost_date_time-xgcc40-mt-1_42 -lboost_thread-xgcc40-mt-1_42
         }
-
-        DEFINES += OGRE_PLUGIN_VAR=\"$$OGREDIR/lib\"
     }
 } else:unix {
     CONFIG += link_pkgconfig
     PKGCONFIG += OGRE
-    OGRELIBDIR = $$system(pkg-config --libs-only-L OGRE)
-    isEmpty(OGRELIBDIR) {
-        OGRELIBDIR = /usr/lib
-    } else {
-        OGRELIBDIR = $$replace(OGRELIBDIR, -L,)
-    }
-    OGREPLUGINDIR = $$OGRELIBDIR/OGRE
-    DEFINES += OGRE_PLUGIN_VAR=\"$$OGREPLUGINDIR\"
 } else:win32 {
     OGREDIR = $$(OGRE_HOME)
     isEmpty(OGREDIR) {
@@ -55,13 +45,6 @@ macx {
             } else {
                 LIBS += -L$$BOOSTDIR/lib -llibboost_date_time-vc90-mt-gd-1_42 -llibboost_thread-vc90-mt-gd-1_42
             }
-        }
-
-        CONFIG(release, debug|release) {
-            DEFINES += OGRE_PLUGIN_VAR=\\\"$$OGREDIR/bin/release\\\"
-        } else {
-            DEFINES += OGRE_PLUGIN_VAR=\\\"$$OGREDIR/bin/debug\\\"
-            DEFINES += DEBUG_PLUGIN=1
         }
     }
 }

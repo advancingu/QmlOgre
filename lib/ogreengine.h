@@ -15,10 +15,6 @@
 #include <QOpenGLContext>
 #include <Ogre.h>
 
-#define STRINGIFY_(x) #x
-#define STRINGIFY(x) STRINGIFY_(x)
-#define OGRE_PLUGIN_DIR STRINGIFY(OGRE_PLUGIN_VAR)
-
 namespace Ogre {
 class Root;
 class RenderTexture;
@@ -40,7 +36,6 @@ public:
     Ogre::Root *startEngine();
     void stopEngine(Ogre::Root *ogreRoot);
 
-
     void activateOgreContext();
     void doneOgreContext();
 
@@ -48,7 +43,10 @@ public:
 
     QSGTexture* createTextureFromId(uint id, const QSize &size, QQuickWindow::CreateTextureOptions options = QQuickWindow::CreateTextureOption(0)) const;
 
+    void setupResources(void);
+
 private:
+    Ogre::String m_resources_cfg;
     Ogre::RenderWindow *m_ogreWindow;
 
     QQuickWindow *m_quickWindow;
@@ -57,8 +55,6 @@ private:
     QOpenGLContext* m_ogreContext;
     /** Pointer to QOpenGLContext to be restored after Ogre context. */
     QOpenGLContext* m_qtContext;
-
-    void loadOgrePlugin(Ogre::Root *ogreRoot, const QString &name);
 
 protected:
     void setQuickWindow(QQuickWindow *window);

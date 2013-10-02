@@ -13,7 +13,8 @@
 #include <QOpenGLFunctions>
 
 OgreEngine::OgreEngine(QQuickWindow *window)
-    : QObject()
+    : QObject(),
+      m_resources_cfg(Ogre::StringUtil::BLANK)
 {
     qmlRegisterType<OgreItem>("Ogre", 1, 0, "OgreItem");
     qmlRegisterType<OgreEngine>("OgreEngine", 1, 0, "OgreEngine");
@@ -28,11 +29,11 @@ OgreEngine::~OgreEngine()
 
 Ogre::Root* OgreEngine::startEngine()
 {
+    m_resources_cfg = "resources.cfg";
+
     activateOgreContext();
 
     Ogre::Root *ogreRoot = new Ogre::Root;
-    loadOgrePlugin(ogreRoot, "RenderSystem_GL");
-
     Ogre::RenderSystem *renderSystem = ogreRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
     ogreRoot->setRenderSystem(renderSystem);
     ogreRoot->initialise(false);
@@ -127,17 +128,30 @@ QSGTexture* OgreEngine::createTextureFromId(uint id, const QSize &size, QQuickWi
     return m_quickWindow->createTextureFromId(id, size, options);
 }
 
-void OgreEngine::loadOgrePlugin(Ogre::Root* ogreRoot, const QString &name)
+void OgreEngine::setupResources(void)
 {
-    QString pluginDir = QLatin1String(OGRE_PLUGIN_DIR);
-    pluginDir.remove("\"");
-    pluginDir += "/";
+    // Load resource paths from config file
+    Ogre::ConfigFile cf;
+    cf.load(m_resources_cfg);
 
-    QString pluginPath;
-#ifdef DEBUG_PLUGIN
-    glPlugin += pluginDir + name + QString("_d");
-#else
-    pluginPath += pluginDir + name;
-#endif
-    ogreRoot->loadPlugin(pluginPath.toLatin1().constData());
+    // Go through all sections & settings in the file
+    Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+
+    Ogre::String secName, typeName, archName;
+    while (seci.hasMoreElements())
+    {
+        secName = seci.peekNextKey();
+        Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+        Ogre::ConfigFile::SettingsMultiMap::iterator i;
+        for (i = settings->begin(); i != settings->end(); ++i)
+        {
+            typeName = i->first;
+            archName = i->second;
+
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+                archName, typeName, secName);
+        }
+    }
+
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
