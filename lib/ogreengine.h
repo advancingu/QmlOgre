@@ -15,9 +15,6 @@
 #include <QOpenGLContext>
 #include <Ogre.h>
 
-#define STRINGIFY_(x) #x
-#define STRINGIFY(x) STRINGIFY_(x)
-
 namespace Ogre {
 class Root;
 class RenderTexture;
