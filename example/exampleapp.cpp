@@ -57,13 +57,9 @@ void ExampleApp::initializeOgre()
     // start up Ogre
     m_ogreEngine = new OgreEngine(this);
     m_root = m_ogreEngine->startEngine();
-
-    //
-    // add sample Ogre data
-    //
     m_ogreEngine->setupResources();
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
+    // set up Ogre scene
     m_sceneManager = m_root->createSceneManager(Ogre::ST_GENERIC, "mySceneManager");
 
     Ogre::Camera *camera = m_sceneManager->createCamera("myCamera");

@@ -152,4 +152,6 @@ void OgreEngine::setupResources(void)
                 archName, typeName, secName);
         }
     }
+
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
