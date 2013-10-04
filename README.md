@@ -11,6 +11,12 @@ Features
 * Allows using the full range of QML features
 * Places no restriction on the depth sorting of Ogre items versus other QML elements
 
+Requirements
+------------
+
+* Ogre 1.8
+* Qt 5
+
 Documentation
 -------------
 
