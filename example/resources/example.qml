@@ -9,6 +9,7 @@
 
 import QtQuick 2.0
 import Ogre 1.0
+import Example 1.0
 
 Rectangle {
     id: ogre
@@ -23,6 +24,9 @@ Rectangle {
         Behavior on opacity { NumberAnimation { } }
     }
 
+    Camera {
+        id: cam1
+    }
 
     OgreItem {
         id: ogreitem
@@ -31,7 +35,7 @@ Rectangle {
         anchors.leftMargin: -5
         anchors.top: toolbar1.bottom
         anchors.topMargin: 6
-        camera: Camera
+        camera: cam1
         ogreEngine: OgreEngine
 
         Behavior on opacity { NumberAnimation { } }

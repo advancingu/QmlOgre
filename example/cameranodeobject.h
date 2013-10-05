@@ -26,7 +26,7 @@ class CameraNodeObject : public QObject, public OgreCameraWrapper
     Q_PROPERTY(qreal pitch READ pitch WRITE setPitch)
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom)
 public:
-    explicit CameraNodeObject(Ogre::Camera *cam, QObject *parent = 0);
+    explicit CameraNodeObject(QObject *parent = 0);
 
     Ogre::SceneNode *sceneNode() const
     { return m_node; }

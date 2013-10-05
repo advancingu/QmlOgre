@@ -10,6 +10,7 @@ Features
 * Creates an OpenGL context for Ogre which is shared with Qt's QML OpenGL context
 * Allows using the full range of QML features
 * Places no restriction on the depth sorting of Ogre items versus other QML elements
+* Allows multiple independent cameras, each assigned to an Ogre QML item, viewing the same scene
 
 Requirements
 ------------

@@ -11,7 +11,6 @@
 #define EXAMPLEAPP_H
 
 #include "../lib/ogreengine.h"
-#include "cameranodeobject.h"
 
 #include <QtQuick/QQuickView>
 
@@ -30,7 +29,6 @@ public slots:
     void addContent();
     
 private:
-    CameraNodeObject *m_cameraObject;
     OgreEngine *m_ogreEngine;
 
     Ogre::SceneManager *m_sceneManager;
