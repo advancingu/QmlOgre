@@ -10,15 +10,19 @@
 #ifndef OGRECAMERAWRAPPER_H
 #define OGRECAMERAWRAPPER_H
 
-#include <QObject>
 #include <Ogre.h>
 
-class OgreCameraWrapper : public QObject
+/**
+ * @brief The OgreCameraWrapper class defines an interface
+ * that allows assigning Ogre::Camera instances to OgreItem
+ * via QML.
+ *
+ * Implementing classes must inherit from QObject.
+ */
+class OgreCameraWrapper
 {
-    Q_OBJECT
-
 public:
-    OgreCameraWrapper(QObject *parent = 0);
+    OgreCameraWrapper();
     virtual ~OgreCameraWrapper() {}
     Ogre::Camera* camera() { return m_camera; }
 

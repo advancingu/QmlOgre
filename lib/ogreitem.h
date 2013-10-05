@@ -26,7 +26,7 @@ class OgreItem : public QQuickItem
 public:
     OgreItem(QQuickItem *parent = 0);
 
-    QObject *camera() const { return qobject_cast<QObject *>(m_camera); }
+    QObject *camera() const { return dynamic_cast<QObject *>(m_camera); }
     void setCamera(QObject *camera);
 
     OgreEngine *ogreEngine() const { return m_ogreEngineItem; }

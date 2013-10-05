@@ -19,7 +19,7 @@ class SceneNode;
 class Camera;
 }
 
-class CameraNodeObject :  public OgreCameraWrapper
+class CameraNodeObject : public QObject, public OgreCameraWrapper
 {
     Q_OBJECT
     Q_PROPERTY(qreal yaw READ yaw WRITE setYaw)

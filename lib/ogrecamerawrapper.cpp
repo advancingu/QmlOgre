@@ -9,9 +9,7 @@
 
 #include "ogrecamerawrapper.h"
 
-OgreCameraWrapper::OgreCameraWrapper(QObject *parent)
-    : QObject(parent)
-    , m_camera(0)
+OgreCameraWrapper::OgreCameraWrapper()
+    : m_camera(0)
 {
-
 }

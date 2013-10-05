@@ -52,7 +52,7 @@ void OgreItem::timerEvent(QTimerEvent *)
 
 void OgreItem::setCamera(QObject *camera)
 {
-    m_camera = qobject_cast<OgreCameraWrapper*>(camera);
+    m_camera = dynamic_cast<OgreCameraWrapper*>(camera);
 }
 
 void OgreItem::setOgreEngine(OgreEngine *ogreEngine)
