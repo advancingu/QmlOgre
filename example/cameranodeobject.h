@@ -30,6 +30,7 @@ public:
 
     Ogre::SceneNode *sceneNode() const
     { return m_node; }
+    Ogre::Camera* camera() const { return m_camera; }
 
     qreal yaw() const
     { return m_yaw; }
@@ -47,6 +48,7 @@ private:
     void updateRotation();
 
     Ogre::SceneNode *m_node;
+    Ogre::Camera *m_camera;
 
     qreal m_yaw;
     qreal m_pitch;

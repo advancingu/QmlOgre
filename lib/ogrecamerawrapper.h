@@ -24,10 +24,7 @@ class OgreCameraWrapper
 public:
     OgreCameraWrapper();
     virtual ~OgreCameraWrapper() {}
-    Ogre::Camera* camera() { return m_camera; }
-
-protected:
-    Ogre::Camera *m_camera;
+    virtual Ogre::Camera* camera() const = 0;
 };
 
 #endif // OGRECAMERAWRAPPER_H

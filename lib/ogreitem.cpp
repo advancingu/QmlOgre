@@ -24,7 +24,7 @@ OgreItem::OgreItem(QQuickItem *parent)
 
 QSGNode *OgreItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 {
-    if (width() <= 0 || height() <= 0 || !m_camera || !m_ogreEngineItem) {
+    if (width() <= 0 || height() <= 0 || !m_camera || !m_camera->camera() || !m_ogreEngineItem) {
         delete oldNode;
         return 0;
     }

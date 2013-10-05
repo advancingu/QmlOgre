@@ -10,6 +10,5 @@
 #include "ogrecamerawrapper.h"
 
 OgreCameraWrapper::OgreCameraWrapper()
-    : m_camera(0)
 {
 }

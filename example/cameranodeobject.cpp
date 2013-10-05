@@ -20,6 +20,7 @@ static const Ogre::Vector3 initialPosition(0, 0, 300);
 CameraNodeObject::CameraNodeObject(QObject *parent) :
     QObject(parent),
     OgreCameraWrapper(),
+    m_camera(0),
     m_yaw(0),
     m_pitch(0),
     m_zoom(1)
